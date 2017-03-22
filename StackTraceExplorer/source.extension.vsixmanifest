@@ -5,7 +5,7 @@
     <DisplayName>Stack Trace Explorer</DisplayName>
     <Description xml:space="preserve">Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.</Description>
     <License>Resources\License.txt</License>
-    <Icon>Resources\CallStackWindow.png</Icon>
+    <Icon>Resources\CallStackWindow_256x.png</Icon>
     <Tags>stack, trace, stacktrace, call stack, call, debug, debugging, explorer</Tags>
   </Metadata>
   <Installation>
