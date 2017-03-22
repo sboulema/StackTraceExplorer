@@ -18,6 +18,7 @@ namespace StackTraceExplorer
 
             foreach (Project project in projects)
             {
+                if (project.CodeModel == null) continue;
                 needle = Find(project.CodeModel.CodeElements, input[0]);              
             }
 

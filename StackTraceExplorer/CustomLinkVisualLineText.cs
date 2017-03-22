@@ -30,14 +30,19 @@ namespace StackTraceExplorer
             RequireControlModifierForClick = requireControlModifierForClick;
             Link = theLink;
             ForegroundBrush = foregroundBrush;
-            ClickFunction = clickFunction;
+            ClickFunction = clickFunction;         
         }
 
 
         public override TextRun CreateTextRun(int startVisualColumn, ITextRunConstructionContext context)
         {
             TextRunProperties.SetForegroundBrush(ForegroundBrush);
-            TextRunProperties.SetTextDecorations(TextDecorations.Underline);
+
+            if (LinkIsClickable() && EnvDteHelper.LineNumber == ParentVisualLine.FirstDocumentLine.LineNumber)
+            {
+                TextRunProperties.SetTextDecorations(TextDecorations.Underline);
+            }
+
             return base.CreateTextRun(startVisualColumn, context);
         }
 
@@ -51,13 +56,14 @@ namespace StackTraceExplorer
                 return true;
         }
 
-
         protected override void OnQueryCursor(QueryCursorEventArgs e)
         {
             if (LinkIsClickable())
             {
                 e.Handled = true;
                 e.Cursor = Cursors.Hand;
+                EnvDteHelper.LineNumber = ParentVisualLine.FirstDocumentLine.LineNumber;
+                (e.Source as TextView).Redraw();
             }
         }
 
@@ -72,11 +78,7 @@ namespace StackTraceExplorer
 
         protected override VisualLineText CreateInstance(int length)
         {
-
-            var a = new CustomLinkVisualLineText(Link, ParentVisualLine, length, ForegroundBrush, ClickFunction, false)
-            {
-                RequireControlModifierForClick = RequireControlModifierForClick
-            };
+            var a = new CustomLinkVisualLineText(Link, ParentVisualLine, length, ForegroundBrush, ClickFunction, false);
             return a;
         }
     }

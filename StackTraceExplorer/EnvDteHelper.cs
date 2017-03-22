@@ -1,10 +1,12 @@
 ﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell.Interop;
+using ICSharpCode.AvalonEdit;
+using TextEditor = ICSharpCode.AvalonEdit.TextEditor;
 
 namespace StackTraceExplorer
 {
     public static class EnvDteHelper
     {
         public static DTE Dte;
+        public static int LineNumber;
     }
 }

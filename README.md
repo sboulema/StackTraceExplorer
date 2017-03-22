@@ -4,7 +4,7 @@ Parse those pesty unreadable long stack traces. Stack Trace Explorer provides sy
 ## Installing
 Visual Studio Marketplace 
 
-Github Releases
+[Github Releases](https://github.com/sboulema/StackTraceExplorer/releases)
 
 [Open VSIX Gallery](http://vsixgallery.com/extension/StackTraceExplorer.Samir%20Boulema/)
 
