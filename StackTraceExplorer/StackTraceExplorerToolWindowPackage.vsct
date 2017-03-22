@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+  <Include href="KnownImageIds.vsct"/>
+
+  <Commands package="guidStackTraceExplorerToolWindowPackage">
+    <Buttons>
+      <Button guid="guidStackTraceExplorerToolWindowPackageCmdSet" id="StackTraceExplorerToolWindowCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Icon guid="ImageCatalogGuid" id="CallStackWindow" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Stack Trace Explorer</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="guidStackTraceExplorerToolWindowPackage" value="{0485ea98-864e-461f-945f-3c8f9c994842}" />
+
+    <GuidSymbol name="guidStackTraceExplorerToolWindowPackageCmdSet" value="{8de831e0-1853-4232-8c10-da7fac5a2b54}">
+      <IDSymbol name="StackTraceExplorerToolWindowCommandId" value="0x0100" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

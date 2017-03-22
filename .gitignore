@@ -1,0 +1,4 @@
+/.vs/StackTraceExplorer/v15/*.suo
+/StackTraceExplorer/bin
+/StackTraceExplorer/obj
+/packages
