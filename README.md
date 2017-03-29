@@ -17,7 +17,7 @@ You can find the Stack Trace Explorer at
 `View -> Other Windows -> Stack Trace Explorer`
 
 ## Screenshots
-coming soon...
+![Screenshot](http://i.imgur.com/iAFZxRe.png)
 
 ---
 

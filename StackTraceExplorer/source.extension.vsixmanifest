@@ -4,8 +4,12 @@
     <Identity Id="StackTraceExplorer.Samir Boulema" Version="1.1" Language="en-US" Publisher="Samir L. Boulema" />
     <DisplayName>Stack Trace Explorer</DisplayName>
     <Description xml:space="preserve">Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.</Description>
+    <MoreInfo>https://github.com/sboulema/StackTraceExplorer</MoreInfo>
     <License>Resources\License.txt</License>
+    <GettingStartedGuide>https://github.com/sboulema/StackTraceExplorer/blob/master/README.md</GettingStartedGuide>
+    <ReleaseNotes>https://github.com/sboulema/StackTraceExplorer/releases</ReleaseNotes>
     <Icon>Resources\CallStackWindow_256x.png</Icon>
+    <PreviewImage>Resources\Preview.png</PreviewImage>
     <Tags>stack, trace, stacktrace, call stack, call, debug, debugging, explorer</Tags>
   </Metadata>
   <Installation>
