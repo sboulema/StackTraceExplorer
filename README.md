@@ -1,8 +1,10 @@
 # Stack Trace Explorer
 Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.
 
+[![Beerpay](https://beerpay.io/sboulema/StackTraceExplorer/badge.svg?style=flat)](https://beerpay.io/sboulema/StackTraceExplorer)
+
 ## Installing
-Visual Studio Marketplace 
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/vsgallery/0886a4d9-35e3-431a-b86c-bf0e346ad036) ![Marketplace](http://vsmarketplacebadge.apphb.com/version-short/0886a4d9-35e3-431a-b86c-bf0e346ad036.svg)
 
 [Github Releases](https://github.com/sboulema/StackTraceExplorer/releases)
 
@@ -15,6 +17,13 @@ Visual Studio Marketplace
 You can find the Stack Trace Explorer at
 
 `View -> Other Windows -> Stack Trace Explorer`
+
+## Features
+- Clicking a filepath will open the file at the line mentioned in the stacktrace
+- Clicking a method will open the corresponding file at the start of that method
+- Wrap long stacktraces
+- Syntax highlighting
+- Dark theme support
 
 ## Screenshots
 ![Screenshot](http://i.imgur.com/iAFZxRe.png)
