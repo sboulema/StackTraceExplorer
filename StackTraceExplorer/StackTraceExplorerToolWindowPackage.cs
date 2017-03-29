@@ -22,7 +22,7 @@ namespace StackTraceExplorer
 
         public void TestStackTrace()
         {
-            throw new Exception("Testing stack trace explorer");
+            EnvDteHelper.TestStackTrace();
         }
 
         #region Package Members

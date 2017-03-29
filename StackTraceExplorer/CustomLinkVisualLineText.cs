@@ -13,7 +13,7 @@ namespace StackTraceExplorer
     /// </summary>
     public class CustomLinkVisualLineText : VisualLineText
     {
-        private string[] Link { get; set; }
+        private string[] Link { get; }
         public bool RequireControlModifierForClick { get; set; }
         public Brush ForegroundBrush { get; set; }
         public Func<string[], bool> ClickFunction { get; set; }
@@ -38,7 +38,12 @@ namespace StackTraceExplorer
         {
             TextRunProperties.SetForegroundBrush(ForegroundBrush);
 
-            if (LinkIsClickable() && EnvDteHelper.LineNumber == ParentVisualLine.FirstDocumentLine.LineNumber)
+            var lineNumber = EnvDteHelper.TextEditor.Document.GetLineByOffset(context.VisualLine.StartOffset).LineNumber;
+
+            if (LinkIsClickable() && 
+                EnvDteHelper.LineNumber == lineNumber &&
+                EnvDteHelper.CurrentColumn >= RelativeTextOffset &&
+                EnvDteHelper.CurrentColumn <= RelativeTextOffset + VisualLength)
             {
                 TextRunProperties.SetTextDecorations(TextDecorations.Underline);
             }
@@ -46,25 +51,25 @@ namespace StackTraceExplorer
             return base.CreateTextRun(startVisualColumn, context);
         }
 
-        bool LinkIsClickable()
+        private bool LinkIsClickable()
         {
             if (!Link.Any())
                 return false;
             if (RequireControlModifierForClick)
                 return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
-            else
-                return true;
+            return true;
         }
 
         protected override void OnQueryCursor(QueryCursorEventArgs e)
         {
-            if (LinkIsClickable())
-            {
-                e.Handled = true;
-                e.Cursor = Cursors.Hand;
-                EnvDteHelper.LineNumber = ParentVisualLine.FirstDocumentLine.LineNumber;
-                (e.Source as TextView).Redraw();
-            }
+            if (!LinkIsClickable()) return;
+
+            e.Handled = true;
+            e.Cursor = Cursors.Hand;
+                
+            EnvDteHelper.SetCurrentMouseOffset(e);
+
+            (e.Source as TextView).Redraw();
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)

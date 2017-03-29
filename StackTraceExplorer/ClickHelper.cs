@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using System;
+using EnvDTE;
 
 namespace StackTraceExplorer
 {
@@ -50,6 +51,11 @@ namespace StackTraceExplorer
                 }
             }
             return null;
+        }
+
+        public static void TestStackTrace()
+        {
+            throw new Exception("Testing stack trace explorer");
         }
     }
 }

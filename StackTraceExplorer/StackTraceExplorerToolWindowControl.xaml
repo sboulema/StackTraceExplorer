@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
-             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog" 
-             Background="{DynamicResource VsBrush.Window}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
+             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+             xmlns:vsShell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -45,6 +44,8 @@
             SyntaxHighlighting="C#"
             FontFamily="Consolas"
             FontSize="10pt"
+            Background="{DynamicResource {x:Static vsShell:EnvironmentColors.SystemBackgroundBrushKey}}"
+            Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}"
             Grid.Row="1"/>
     </Grid>
 

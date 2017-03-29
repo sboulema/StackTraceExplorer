@@ -2,6 +2,8 @@
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Rendering;
+using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
 
 namespace StackTraceExplorer.Generators
 {
@@ -42,10 +44,16 @@ namespace StackTraceExplorer.Generators
                 new [] { m.Groups[1].Value, m.Groups[2].Value }, 
                 CurrentContext.VisualLine, 
                 m.Groups[0].Length, 
-                Brushes.Aqua, 
+                ToBrush(EnvironmentColors.ControlLinkTextColorKey),
                 ClickHelper.HandleFileLinkClicked,
                 false
             );
+        }
+
+        private static SolidColorBrush ToBrush(ThemeResourceKey key)
+        {
+            var color = VSColorTheme.GetThemedColor(key);
+            return new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
         }
     }
 }
