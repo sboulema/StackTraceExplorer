@@ -9,9 +9,20 @@ namespace StackTraceExplorer
     {
         public static bool HandleFileLinkClicked(string[] input)
         {
-            EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", File.Exists(input[0]) ? input[0] : Find(input[0]));
+            var path = Find(input[0]);
+            if (File.Exists(path))
+            {
+                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", path);
+                try
+                {
+                    (EnvDteHelper.Dte.ActiveDocument?.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
+                }
+                catch (Exception)
+                {
+                    // Cannot go to the requested line in the file
+                }               
+            }
 
-            (EnvDteHelper.Dte.ActiveDocument?.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
             return true;
         }
 
@@ -56,18 +67,17 @@ namespace StackTraceExplorer
             return null;
         }
 
-        private static string Find(string path)
+        public static string Find(string path)
         {
-            var filename = Path.GetFileName(path);
-            var dir = Path.GetDirectoryName(path);
+            if (string.IsNullOrEmpty(path)) return string.Empty;
 
-            if (string.IsNullOrEmpty(filename) || string.IsNullOrEmpty(dir)) return string.Empty;
+            if (File.Exists(path)) return path;
 
-            var dirParts = dir.Split(Path.DirectorySeparatorChar);
+            var pathParts = path.Split(Path.DirectorySeparatorChar);
 
-            for (var i = 0; i < dirParts.Length; i++)
+            for (var i = 0; i < pathParts.Length; i++)
             {
-                var partialPath = Path.Combine(string.Join(Path.DirectorySeparatorChar.ToString(), dirParts.Skip(i)), filename);
+                var partialPath = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts.Skip(i));
                 var file = EnvDteHelper.Dte.Solution.FindProjectItem(partialPath);
                 if (file != null)
                 {
@@ -75,7 +85,7 @@ namespace StackTraceExplorer
                 }
             }
 
-            return filename;
+            return path;
         }
 
         public static void TestStackTrace()
