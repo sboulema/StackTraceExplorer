@@ -25,6 +25,10 @@ You can find the Stack Trace Explorer at
 - Syntax highlighting
 - Dark theme support
 
+## Supported stack trace formats
+- Visual Studio
+- Application Insights
+
 ## Screenshots
 ![Screenshot](http://i.imgur.com/iAFZxRe.png)
 

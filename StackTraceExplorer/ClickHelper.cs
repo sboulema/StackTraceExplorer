@@ -11,7 +11,7 @@ namespace StackTraceExplorer
         {
             EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", File.Exists(input[0]) ? input[0] : Find(input[0]));
 
-            (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
+            (EnvDteHelper.Dte.ActiveDocument?.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
             return true;
         }
 
@@ -60,6 +60,9 @@ namespace StackTraceExplorer
         {
             var filename = Path.GetFileName(path);
             var dir = Path.GetDirectoryName(path);
+
+            if (string.IsNullOrEmpty(filename) || string.IsNullOrEmpty(dir)) return string.Empty;
+
             var dirParts = dir.Split(Path.DirectorySeparatorChar);
 
             for (var i = 0; i < dirParts.Length; i++)

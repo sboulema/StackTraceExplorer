@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.VisualStudio.PlatformUI;
@@ -12,7 +11,7 @@ namespace StackTraceExplorer.Generators
         // To use this class:
         // textEditor.TextArea.TextView.ElementGenerators.Add(new FileLinkElementGenerator());
 
-        private static readonly Regex FilePathRegex = new Regex(@"(\S*):line (\d+)", RegexOptions.IgnoreCase);
+        private static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\)(?:\\[a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line)? (\d+)", RegexOptions.IgnoreCase);
 
         private Match FindMatch(int startOffset)
         {
