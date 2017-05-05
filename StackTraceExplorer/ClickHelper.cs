@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using EnvDTE;
 
 namespace StackTraceExplorer
@@ -7,8 +9,9 @@ namespace StackTraceExplorer
     {
         public static bool HandleFileLinkClicked(string[] input)
         {
-            EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", input[0]);
-            (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection).GotoLine(int.Parse(input[1]));
+            EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", File.Exists(input[0]) ? input[0] : Find(input[0]));
+
+            (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
             return true;
         }
 
@@ -26,7 +29,7 @@ namespace StackTraceExplorer
             if (needle == null) return false;
 
             EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", needle.ProjectItem.FileNames[0]);
-            (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection).GotoLine(needle.StartPoint.Line);
+            (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(needle.StartPoint.Line);
 
             return true;
         }
@@ -51,6 +54,25 @@ namespace StackTraceExplorer
                 }
             }
             return null;
+        }
+
+        private static string Find(string path)
+        {
+            var filename = Path.GetFileName(path);
+            var dir = Path.GetDirectoryName(path);
+            var dirParts = dir.Split(Path.DirectorySeparatorChar);
+
+            for (var i = 0; i < dirParts.Length; i++)
+            {
+                var partialPath = Path.Combine(string.Join(Path.DirectorySeparatorChar.ToString(), dirParts.Skip(i)), filename);
+                var file = EnvDteHelper.Dte.Solution.FindProjectItem(partialPath);
+                if (file != null)
+                {
+                    return file.FileNames[0];
+                }
+            }
+
+            return filename;
         }
 
         public static void TestStackTrace()

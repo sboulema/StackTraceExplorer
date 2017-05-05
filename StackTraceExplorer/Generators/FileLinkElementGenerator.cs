@@ -39,7 +39,6 @@ namespace StackTraceExplorer.Generators
             var m = FindMatch(offset);
             // check whether there's a match exactly at offset
             if (!m.Success || m.Index != 0) return null;
-            if (!File.Exists(m.Groups[1].Value)) return null;
             return new CustomLinkVisualLineText(
                 new [] { m.Groups[1].Value, m.Groups[2].Value }, 
                 CurrentContext.VisualLine, 

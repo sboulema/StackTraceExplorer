@@ -4,7 +4,7 @@ Parse those pesty unreadable long stack traces. Stack Trace Explorer provides sy
 [![Beerpay](https://beerpay.io/sboulema/StackTraceExplorer/badge.svg?style=flat)](https://beerpay.io/sboulema/StackTraceExplorer)
 
 ## Installing
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/vsgallery/0886a4d9-35e3-431a-b86c-bf0e346ad036) ![Marketplace](http://vsmarketplacebadge.apphb.com/version-short/0886a4d9-35e3-431a-b86c-bf0e346ad036.svg)
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/vsgallery/0886a4d9-35e3-431a-b86c-bf0e346ad036) ![Marketplace](http://vsmarketplacebadge.apphb.com/version-short/SamirBoulema.StackTraceExplorer.svg)
 
 [Github Releases](https://github.com/sboulema/StackTraceExplorer/releases)
 
@@ -16,7 +16,7 @@ Parse those pesty unreadable long stack traces. Stack Trace Explorer provides sy
 ## Usage
 You can find the Stack Trace Explorer at
 
-`View -> Other Windows -> Stack Trace Explorer`
+`View - Other Windows - Stack Trace Explorer`
 
 ## Features
 - Clicking a filepath will open the file at the line mentioned in the stacktrace
