@@ -13,6 +13,7 @@ namespace StackTraceExplorer
             if (File.Exists(path))
             {
                 EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", path);
+             
                 try
                 {
                     (EnvDteHelper.Dte.ActiveDocument?.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
@@ -20,7 +21,8 @@ namespace StackTraceExplorer
                 catch (Exception)
                 {
                     // Cannot go to the requested line in the file
-                }               
+                    return false;
+                }
             }
 
             return true;
@@ -48,8 +50,21 @@ namespace StackTraceExplorer
         private static CodeElement Find(CodeElements elements, string name)
         {
             foreach (CodeElement element in elements)
-            {              
-                if (element.FullName.Equals(name))
+            {
+                try
+                {
+                    if (element.FullName.Equals(name))
+                    {
+                        return element;
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogHelper.Log(e, element);
+                    return null;
+                }
+
+                if (element.Name.Equals(name))
                 {
                     return element;
                 }
