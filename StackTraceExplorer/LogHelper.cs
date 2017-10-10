@@ -1,6 +1,8 @@
 ﻿using Loggly;
 using Loggly.Config;
 using System;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace StackTraceExplorer
 {
@@ -35,6 +37,7 @@ namespace StackTraceExplorer
             }
 
             var logEvent = new LogglyEvent();
+            logEvent.Data.Add("version", GetExecutingAssemblyVersion());
             logEvent.Data.Add("exception", e);
             _client.Log(logEvent);
         }
@@ -47,6 +50,7 @@ namespace StackTraceExplorer
             }
 
             var logEvent = new LogglyEvent();
+            logEvent.Data.Add("version", GetExecutingAssemblyVersion());
             logEvent.Data.Add("exception", e);
             logEvent.Data.Add("context", context);
             _client.Log(logEvent);
@@ -60,6 +64,7 @@ namespace StackTraceExplorer
             }
 
             var logEvent = new LogglyEvent();
+            logEvent.Data.Add("version", GetExecutingAssemblyVersion());
             logEvent.Data.Add("message", message);
             logEvent.Data.Add("exception", e);
             _client.Log(logEvent);
@@ -73,8 +78,17 @@ namespace StackTraceExplorer
             }
 
             var logEvent = new LogglyEvent();
+            logEvent.Data.Add("version", GetExecutingAssemblyVersion());
             logEvent.Data.Add("message", log);
             _client.Log(logEvent);
+        }
+
+        private static Version GetExecutingAssemblyVersion()
+        {
+            var ver = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+
+            // read what's defined in [assembly: AssemblyFileVersion("1.2.3.4")]
+            return new Version(ver.ProductMajorPart, ver.ProductMinorPart, ver.ProductBuildPart, ver.ProductPrivatePart);
         }
     }
 }
