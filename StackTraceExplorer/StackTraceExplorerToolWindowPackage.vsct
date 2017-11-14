@@ -17,6 +17,10 @@
     </Buttons>
   </Commands>
 
+  <KeyBindings>
+    <KeyBinding guid="guidStackTraceExplorerToolWindowPackageCmdSet" key1="S" key2="T" mod1="CONTROL" editor="guidVSStd97" id="StackTraceExplorerToolWindowCommandId" />
+  </KeyBindings>
+
   <Symbols>
     <GuidSymbol name="guidStackTraceExplorerToolWindowPackage" value="{0485ea98-864e-461f-945f-3c8f9c994842}" />
 

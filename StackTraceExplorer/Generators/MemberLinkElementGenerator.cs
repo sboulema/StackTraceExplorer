@@ -3,6 +3,7 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
+using ICSharpCode.AvalonEdit;
 
 namespace StackTraceExplorer.Generators
 {
@@ -11,7 +12,13 @@ namespace StackTraceExplorer.Generators
         // To use this class:
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
-        private static readonly Regex MemberRegex = new Regex(@"(\S+)(\(.*?\))", RegexOptions.IgnoreCase);
+        private TextEditor TextEditor;
+        private static readonly Regex MemberRegex = new Regex(@"(\S+)\s*(\(.*?\))", RegexOptions.IgnoreCase);
+
+        public MemberLinkElementGenerator(TextEditor textEditor)
+        {
+            TextEditor = textEditor;
+        }
 
         private Match FindMatch(int startOffset)
         {
@@ -44,7 +51,9 @@ namespace StackTraceExplorer.Generators
                 m.Length,
                 ToBrush(EnvironmentColors.StartPageTextControlLinkSelectedColorKey), 
                 ClickHelper.HandleFunctionLinkClicked, 
-                false
+                false,
+                CurrentContext.Document,
+                TextEditor
             );
         }
 

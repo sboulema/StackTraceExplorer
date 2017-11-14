@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace StackTraceExplorer
+﻿namespace StackTraceExplorer
 {
     using System.Runtime.InteropServices;
     using Microsoft.VisualStudio.Shell;
@@ -11,7 +9,7 @@ namespace StackTraceExplorer
         public StackTraceExplorerToolWindow() : base(null)
         {
             Caption = "Stack Trace Explorer";
-            Content = new StackTraceExplorerToolWindowControl { DataContext = this };
+            Content = new StackTraceExplorerToolWindowControl();
         }
     }
 }

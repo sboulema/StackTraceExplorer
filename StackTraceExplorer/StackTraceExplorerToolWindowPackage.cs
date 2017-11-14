@@ -20,11 +20,6 @@ namespace StackTraceExplorer
             EnvDteHelper.Dte = GetGlobalService(typeof(DTE)) as DTE;
         }
 
-        public void TestStackTrace()
-        {
-            EnvDteHelper.TestStackTrace();
-        }
-
         #region Package Members
 
         protected override void Initialize()

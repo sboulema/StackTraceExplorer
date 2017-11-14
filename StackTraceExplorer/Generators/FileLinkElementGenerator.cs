@@ -1,9 +1,10 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
+using ICSharpCode.AvalonEdit;
+using System.IO;
 
 namespace StackTraceExplorer.Generators
 {
@@ -12,7 +13,13 @@ namespace StackTraceExplorer.Generators
         // To use this class:
         // textEditor.TextArea.TextView.ElementGenerators.Add(new FileLinkElementGenerator());
 
-        private static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\)(?:\\[a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line)? (\d+)", RegexOptions.IgnoreCase);
+        private TextEditor _textEditor;
+        private static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\)(?:\\[a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile)? (\d+)", RegexOptions.IgnoreCase);
+
+        public FileLinkElementGenerator(TextEditor textEditor)
+        {
+            _textEditor = textEditor;
+        }
 
         private Match FindMatch(int startOffset)
         {
@@ -46,7 +53,9 @@ namespace StackTraceExplorer.Generators
                 m.Groups[0].Length, 
                 ToBrush(EnvironmentColors.ControlLinkTextColorKey),
                 ClickHelper.HandleFileLinkClicked,
-                false
+                false,
+                CurrentContext.Document,
+                _textEditor
             );
         }
 

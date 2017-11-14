@@ -6,47 +6,67 @@
              xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              xmlns:vsShell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:stacktraceexplorer="clr-namespace:StackTraceExplorer"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <TabControl ItemsSource="{Binding StackTraces}" x:Name="StackTraceTabs" Background="Transparent">
+        <!-- Change ItemTemplate to control content on tabs -->
+        <TabControl.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Stack Trace"/>
+                    <imaging:CrispImage Width="10" Height="10" Margin="5,2,0,0" Moniker="{x:Static catalog:KnownMonikers.Close}" MouseDown="CloseButton_MouseDown" />
+                </StackPanel>
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+        <!-- Change ContentTemplate to control main content -->
+        <TabControl.ContentTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-        <StackPanel HorizontalAlignment="Left" Margin="3">
-            <ToggleButton Click="ButtonWrap_OnClick" IsChecked="False">
-                <ToggleButton.Template>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="WrapBorder" BorderBrush="SteelBlue" BorderThickness="0">
-                            <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.WordWrap}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="ToolTip" Value="Enable wrapping of words" />
-                                <Setter TargetName="WrapBorder" Property="BorderThickness" Value="0"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="ToolTip" Value="Disable wrapping of words" />
-                                <Setter TargetName="WrapBorder" Property="BorderThickness" Value="1"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </ToggleButton.Template>
-            </ToggleButton>
-        </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Margin="3">
+                        <ToggleButton IsChecked="{Binding WordWrap, Mode=TwoWay}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border x:Name="WrapBorder" BorderBrush="SteelBlue" BorderThickness="0">
+                                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.WordWrap}" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="ToolTip" Value="Enable wrapping of words" />
+                                            <Setter TargetName="WrapBorder" Property="BorderThickness" Value="0"/>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="ToolTip" Value="Disable wrapping of words" />
+                                            <Setter TargetName="WrapBorder" Property="BorderThickness" Value="1"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                    </StackPanel>
 
-        <avalonEdit:TextEditor
-            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            x:Name="TextEditor"
-            SyntaxHighlighting="C#"
-            FontFamily="Consolas"
-            FontSize="10pt"
-            Background="{DynamicResource {x:Static vsShell:EnvironmentColors.SystemBackgroundBrushKey}}"
-            Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}"
-            Grid.Row="1"/>
-    </Grid>
+                    <stacktraceexplorer:StackTraceEditor 
+                        x:Name="TextEditor"
+                        SyntaxHighlighting="C#"
+                        FontFamily="Consolas"
+                        FontSize="10pt"
+                        WordWrap="{Binding WordWrap}"
+                        Document="{Binding Document}"                        
+                        Background="{DynamicResource {x:Static vsShell:EnvironmentColors.SystemBackgroundBrushKey}}"
+                        Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}"
+                        Grid.Row="1"/>
+                    
+                </Grid>
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+    </TabControl>
 
 </UserControl>

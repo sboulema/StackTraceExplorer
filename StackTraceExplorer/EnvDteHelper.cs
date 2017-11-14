@@ -9,13 +9,7 @@ namespace StackTraceExplorer
         public static DTE Dte;
         public static int LineNumber;
         public static TextEditor TextEditor;
-        public static int CurrentMouseOffset;
         public static int CurrentColumn;
-
-        public static void TestStackTrace()
-        {
-            ClickHelper.TestStackTrace();
-        }
 
         public static void SetCurrentMouseOffset(QueryCursorEventArgs e)
         {
@@ -24,7 +18,6 @@ namespace StackTraceExplorer
 
             LineNumber = pos.Value.Line;
             CurrentColumn = pos.Value.Column;
-            CurrentMouseOffset = TextEditor.Document.GetOffset(LineNumber, CurrentColumn);
         }
     }
 }

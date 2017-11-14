@@ -18,12 +18,17 @@ You can find the Stack Trace Explorer at
 
 `View - Other Windows - Stack Trace Explorer`
 
+or the default keybinding
+
+`Ctrl S, T`
+
 ## Features
 - Clicking a filepath will open the file at the line mentioned in the stacktrace
 - Clicking a method will open the corresponding file at the start of that method
 - Wrap long stacktraces
 - Syntax highlighting
 - Dark theme support
+- Tabs
 
 ## Supported stack trace formats
 - Visual Studio
