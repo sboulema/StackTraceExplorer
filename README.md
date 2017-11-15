@@ -20,7 +20,7 @@ You can find the Stack Trace Explorer at
 
 or the default keybinding
 
-`Ctrl S, T`
+`Ctrl + S, T`
 
 ## Features
 - Clicking a filepath will open the file at the line mentioned in the stacktrace
@@ -30,12 +30,17 @@ or the default keybinding
 - Dark theme support
 - Tabs
 
+### Opening a new tab
+- Copy a stack trace to your clipboard
+- Select a tab, make sure your cursor is not in the text editor
+- Paste your stack trace with `Ctrl + V`
+
 ## Supported stack trace formats
 - Visual Studio
 - Application Insights
 
 ## Screenshots
-![Screenshot](http://i.imgur.com/iAFZxRe.png)
+![Screenshot](https://i.imgur.com/42mKURv.png)
 
 ---
 
