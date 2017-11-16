@@ -12,12 +12,12 @@ namespace StackTraceExplorer.Generators
         // To use this class:
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
-        private TextEditor TextEditor;
-        private static readonly Regex MemberRegex = new Regex(@"(\S+)\s*(\(.*?\))", RegexOptions.IgnoreCase);
+        private TextEditor _textEditor;
+        private static readonly Regex MemberRegex = new Regex(@"(\S*\.\S+)\s*\(", RegexOptions.IgnoreCase);
 
         public MemberLinkElementGenerator(TextEditor textEditor)
         {
-            TextEditor = textEditor;
+            _textEditor = textEditor;
         }
 
         private Match FindMatch(int startOffset)
@@ -53,7 +53,7 @@ namespace StackTraceExplorer.Generators
                 ClickHelper.HandleFunctionLinkClicked, 
                 false,
                 CurrentContext.Document,
-                TextEditor
+                _textEditor
             );
         }
 

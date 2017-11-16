@@ -2,6 +2,9 @@
 using System.IO;
 using System.Linq;
 using EnvDTE;
+using Microsoft.CodeAnalysis.FindSymbols;
+using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.CodeAnalysis;
 
 namespace StackTraceExplorer
 {
@@ -9,79 +12,77 @@ namespace StackTraceExplorer
     {
         public static bool HandleFileLinkClicked(string[] input)
         {
-            var path = Find(input[0]);
-            if (File.Exists(path))
+            try
             {
-                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", path);
-             
-                try
+                var path = Find(input[0]);
+                if (File.Exists(path))
                 {
-                    (EnvDteHelper.Dte.ActiveDocument?.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
-                }
-                catch (Exception)
-                {
-                    // Cannot go to the requested line in the file
-                    return false;
-                }
-            }
+                    EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", path);
 
-            return true;
+                    try
+                    {
+                        (EnvDteHelper.Dte.ActiveDocument?.Selection as TextSelection)?.GotoLine(int.Parse(input[1]));
+                    }
+                    catch (Exception)
+                    {
+                        // Cannot go to the requested line in the file
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                LogHelper.Log(e);
+                return false;
+            }
         }
 
         public static bool HandleFunctionLinkClicked(string[] input)
         {
-            var projects = EnvDteHelper.Dte.Solution.Projects;
-            CodeElement needle = null;
-
-            foreach (Project project in projects)
+            try
             {
-                if (project.CodeModel == null) continue;
-                needle = Find(project.CodeModel.CodeElements, input[0]);              
-            }
+                var workspace = MSBuildWorkspace.Create();
+                var solution = workspace.OpenSolutionAsync(EnvDteHelper.Dte.Solution.FileName).Result;
 
-            if (needle == null) return false;
+                Location location = null;
 
-            EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", needle.ProjectItem.FileNames[0]);
-            (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(needle.StartPoint.Line);
-
-            return true;
-        }
-
-        private static CodeElement Find(CodeElements elements, string name)
-        {
-            foreach (CodeElement element in elements)
-            {
-                try
+                foreach (var project in solution.Projects)
                 {
-                    if (element.FullName.Equals(name))
+                    var symbols = SymbolFinder.FindDeclarationsAsync(project, input[0].Split('.').Last(), true).Result;
+
+                    foreach (var symbol in symbols)
                     {
-                        return element;
+                        var fullName = symbol.ToDisplayString().Split('(')[0];
+                        if (fullName.Equals(input[0]))
+                        {
+                            location = symbol.Locations.FirstOrDefault();
+                            break;
+                        }
                     }
                 }
-                catch (Exception e)
-                {
-                    LogHelper.Log(e, element);
-                    return null;
-                }
 
-                if (element.Name.Equals(name))
-                {
-                    return element;
-                }
-                if (element is CodeNamespace && (element as CodeNamespace).Members.Count > 0)
-                {
-                    var needle = Find((element as CodeNamespace).Members, name);
-                    if (needle != null) return needle;
-                }
-                if (element is CodeClass && (element as CodeClass).Members.Count > 0)
-                {
-                    var needle = Find((element as CodeClass).Members, name);
-                    if (needle != null) return needle;
-                }
+                if (location == null) return false;
+
+                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", location.SourceTree.FilePath);
+                (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(location.GetLineSpan().StartLinePosition.Line + 1);
+
+                return true;
             }
-            return null;
+            catch (Exception e)
+            {
+                LogHelper.Log(e);
+                return false;
+            }
         }
 
+        /// <summary>
+        /// Given a path to a file, try to find a project item that closely matches the file path, 
+        /// but is not an exact match
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static string Find(string path)
         {
             if (string.IsNullOrEmpty(path)) return string.Empty;
@@ -101,11 +102,6 @@ namespace StackTraceExplorer
             }
 
             return path;
-        }
-
-        public static void TestStackTrace()
-        {
-            throw new Exception("Testing stack trace explorer");
         }
     }
 }
