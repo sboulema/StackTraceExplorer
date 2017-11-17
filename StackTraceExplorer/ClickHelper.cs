@@ -44,7 +44,11 @@ namespace StackTraceExplorer
             try
             {
                 var workspace = MSBuildWorkspace.Create();
-                var solution = workspace.OpenSolutionAsync(EnvDteHelper.Dte.Solution.FileName).Result;
+                var solutionFilePath = EnvDteHelper.Dte.Solution.FileName;
+
+                if (!File.Exists(solutionFilePath)) return false;
+
+                var solution = workspace.OpenSolutionAsync(solutionFilePath).Result;
 
                 Location location = null;
 
