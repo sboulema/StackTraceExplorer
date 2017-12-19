@@ -12,12 +12,48 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-    <TabControl ItemsSource="{Binding StackTraces}" x:Name="StackTraceTabs" Background="Transparent">
+    <TabControl ItemsSource="{Binding StackTraces}" x:Name="StackTraceTabs"                
+                Background="{DynamicResource {x:Static vsShell:EnvironmentColors.MainWindowActiveCaptionBrushKey}}">
+        <!-- Change TabControl Grid to control tabstrip -->
+        <TabControl.Resources>
+            <Style TargetType="{x:Type Grid}">
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.EnvironmentBackgroundBrushKey}}"/>
+            </Style>
+            <Style TargetType="{x:Type TabItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabItem}">
+                            <Grid>
+                                <Border Name="Border">
+                                    <ContentPresenter x:Name="ContentSite" Margin="3" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header" >
+                                    </ContentPresenter>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.TitleBarActiveBorderBrushKey}}" />
+                                    <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.TitleBarActiveTextBrushKey}}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.TitleBarInactiveBrushKey}}" />
+                                    <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.TitleBarInactiveTextBrushKey}}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.FileTabHotBorderBrushKey}}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </TabControl.Resources>
         <!-- Change ItemTemplate to control content on tabs -->
         <TabControl.ItemTemplate>
             <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Stack Trace"/>
+                <StackPanel Orientation="Horizontal" x:Name="StackTraceTab">
+                    <TextBlock Text="Stack Trace" />
                     <imaging:CrispImage Width="10" Height="10" Margin="5,2,0,0" Moniker="{x:Static catalog:KnownMonikers.Close}" MouseDown="CloseButton_MouseDown" />
                 </StackPanel>
             </DataTemplate>
@@ -60,8 +96,8 @@
                         FontSize="10pt"
                         WordWrap="{Binding WordWrap}"
                         Document="{Binding Document}"                        
-                        Background="{DynamicResource {x:Static vsShell:EnvironmentColors.SystemBackgroundBrushKey}}"
-                        Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}"
+                        Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ScrollBarBorderBrushKey}}"
+                        Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.StartPageTextSubHeadingSelectedBrushKey}}"
                         Grid.Row="1"/>
                     
                 </Grid>
