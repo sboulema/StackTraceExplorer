@@ -4,7 +4,7 @@ Parse those pesty unreadable long stack traces. Stack Trace Explorer provides sy
 [![Beerpay](https://beerpay.io/sboulema/StackTraceExplorer/badge.svg?style=flat)](https://beerpay.io/sboulema/StackTraceExplorer)
 
 ## Installing
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/vsgallery/0886a4d9-35e3-431a-b86c-bf0e346ad036) ![Marketplace](http://vsmarketplacebadge.apphb.com/version-short/SamirBoulema.StackTraceExplorer.svg)
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SamirBoulema.StackTraceExplorer) ![Marketplace](https://img.shields.io/vscode-marketplace/v/SamirBoulema.StackTraceExplorer.svg)
 
 [Github Releases](https://github.com/sboulema/StackTraceExplorer/releases)
 

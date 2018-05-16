@@ -10,6 +10,11 @@ namespace StackTraceExplorer
 {
     public static class ClickHelper
     {
+        /// <summary>
+        /// Handle click event on a file path in a stacktrace
+        /// </summary>
+        /// <param name="input">File path</param>
+        /// <returns>File found</returns>
         public static bool HandleFileLinkClicked(string[] input)
         {
             try
@@ -39,6 +44,11 @@ namespace StackTraceExplorer
             }
         }
 
+        /// <summary>
+        /// Handle click event on a function in a stacktrace
+        /// </summary>
+        /// <param name="input">Function name</param>
+        /// <returns>Function found</returns>
         public static bool HandleFunctionLinkClicked(string[] input)
         {
             try
@@ -50,7 +60,7 @@ namespace StackTraceExplorer
 
                 var solution = workspace.OpenSolutionAsync(solutionFilePath).Result;
 
-                Location location = null;
+                Location fileLocationContainingSymbol = null;
 
                 foreach (var project in solution.Projects)
                 {
@@ -61,16 +71,20 @@ namespace StackTraceExplorer
                         var fullName = symbol.ToDisplayString().Split('(')[0];
                         if (fullName.Equals(input[0]))
                         {
-                            location = symbol.Locations.FirstOrDefault();
-                            break;
+                            var location = symbol.Locations.FirstOrDefault();
+                            if (location != null && File.Exists(location.SourceTree.FilePath))
+                            {
+                                fileLocationContainingSymbol = location;
+                                break;
+                            }
                         }
                     }
                 }
 
-                if (location == null) return false;
+                if (fileLocationContainingSymbol == null) return false;
 
-                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", location.SourceTree.FilePath);
-                (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(location.GetLineSpan().StartLinePosition.Line + 1);
+                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", fileLocationContainingSymbol.SourceTree.FilePath);
+                (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(fileLocationContainingSymbol.GetLineSpan().StartLinePosition.Line + 1);
 
                 return true;
             }
