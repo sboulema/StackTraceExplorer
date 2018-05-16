@@ -58,6 +58,9 @@ namespace StackTraceExplorer
 
                 if (!File.Exists(solutionFilePath)) return false;
 
+                //DEBUG
+                LogHelper.Log($"1. Solution: '{solutionFilePath}'");
+
                 var solution = workspace.OpenSolutionAsync(solutionFilePath).Result;
 
                 Location fileLocationContainingSymbol = null;
@@ -81,10 +84,16 @@ namespace StackTraceExplorer
                     }
                 }
 
+                //DEBUG
+                LogHelper.Log($"2. Symbol location found: '{fileLocationContainingSymbol}'");
+
                 if (fileLocationContainingSymbol == null) return false;
 
-                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", fileLocationContainingSymbol.SourceTree.FilePath);
-                (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(fileLocationContainingSymbol.GetLineSpan().StartLinePosition.Line + 1);
+                //DEBUG
+                LogHelper.Log($"3. File location containing symbol: '{fileLocationContainingSymbol.SourceTree.FilePath}'");
+
+                //EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", fileLocationContainingSymbol.SourceTree.FilePath);
+                //(EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(fileLocationContainingSymbol.GetLineSpan().StartLinePosition.Line + 1);
 
                 return true;
             }
