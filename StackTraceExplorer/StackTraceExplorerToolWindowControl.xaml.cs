@@ -1,7 +1,6 @@
 ﻿using StackTraceExplorer.Models;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace StackTraceExplorer
@@ -17,13 +16,12 @@ namespace StackTraceExplorer
             KeyDown += StackTraceExplorerToolWindowControl_KeyDown;
 
             ViewModel = new StackTracesViewModel();
+            DataContext = ViewModel;
 
             if (!ViewModel.StackTraces.Any())
             {
-               AddStackTrace();
-            }          
-
-            DataContext = ViewModel;
+                AddStackTrace();
+            }
         }
 
         private void StackTraceExplorerToolWindowControl_KeyDown(object sender, KeyEventArgs e)
@@ -48,7 +46,11 @@ namespace StackTraceExplorer
             }
         }
 
-        private void AddStackTrace(string trace = "")
+        /// <summary>
+        /// Add a tab to the toolwindow with the pasted stacktrace
+        /// </summary>
+        /// <param name="trace">stack trace</param>
+        public void AddStackTrace(string trace = "")
         {
             ViewModel.AddStackTrace(trace);
             StackTraceTabs.SelectedIndex = StackTraceTabs.Items.Count - 1;

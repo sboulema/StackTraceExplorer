@@ -4,6 +4,7 @@ using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using ICSharpCode.AvalonEdit;
+using StackTraceExplorer.Helpers;
 
 namespace StackTraceExplorer.Generators
 {
@@ -12,8 +13,8 @@ namespace StackTraceExplorer.Generators
         // To use this class:
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
-        private TextEditor _textEditor;
-        private static readonly Regex MemberRegex = new Regex(@"(\S*\.\S+)\s*\(", RegexOptions.IgnoreCase);
+        private readonly TextEditor _textEditor;
+        private static readonly Regex MemberRegex = new Regex(@"(\S*\.\S+\s*\(.*\))", RegexOptions.IgnoreCase);
 
         public MemberLinkElementGenerator(TextEditor textEditor)
         {

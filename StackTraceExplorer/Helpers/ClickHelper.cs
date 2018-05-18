@@ -2,11 +2,9 @@
 using System.IO;
 using System.Linq;
 using EnvDTE;
-using Microsoft.CodeAnalysis.FindSymbols;
-using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.CodeAnalysis;
+using Microsoft.VisualStudio.LanguageServices;
 
-namespace StackTraceExplorer
+namespace StackTraceExplorer.Helpers
 {
     public static class ClickHelper
     {
@@ -53,38 +51,18 @@ namespace StackTraceExplorer
         {
             try
             {
-                var workspace = MSBuildWorkspace.Create();
-                var solutionFilePath = EnvDteHelper.Dte.Solution.FileName;
+                var workspace = EnvDteHelper.ComponentModel.GetService<VisualStudioWorkspace>();
+                SolutionHelper.Solution = workspace.CurrentSolution;
+                var compilations = SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution).Result;
 
-                if (!File.Exists(solutionFilePath)) return false;
+                var method = SolutionHelper.Resolve(input.FirstOrDefault());
 
-                var solution = workspace.OpenSolutionAsync(solutionFilePath).Result;
+                if (method == null) return false;
 
-                Location fileLocationContainingSymbol = null;
+                var location = method.Locations.FirstOrDefault();
 
-                foreach (var project in solution.Projects)
-                {
-                    var symbols = SymbolFinder.FindDeclarationsAsync(project, input[0].Split('.').Last(), true).Result;
-
-                    foreach (var symbol in symbols)
-                    {
-                        var fullName = symbol.ToDisplayString().Split('(')[0];
-                        if (fullName.Equals(input[0]))
-                        {
-                            var location = symbol.Locations.FirstOrDefault();
-                            if (location != null && File.Exists(location.SourceTree.FilePath))
-                            {
-                                fileLocationContainingSymbol = location;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (fileLocationContainingSymbol == null) return false;
-
-                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", fileLocationContainingSymbol.SourceTree.FilePath);
-                (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(fileLocationContainingSymbol.GetLineSpan().StartLinePosition.Line + 1);
+                EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", location.SourceTree.FilePath);
+                (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(location.GetLineSpan().StartLinePosition.Line + 1);
 
                 return true;
             }

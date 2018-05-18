@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using ICSharpCode.AvalonEdit;
 using System.IO;
+using StackTraceExplorer.Helpers;
 
 namespace StackTraceExplorer.Generators
 {

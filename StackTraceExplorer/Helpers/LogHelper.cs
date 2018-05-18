@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace StackTraceExplorer
+namespace StackTraceExplorer.Helpers
 {
     public static class LogHelper
     {

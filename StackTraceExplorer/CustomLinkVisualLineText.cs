@@ -7,6 +7,7 @@ using System.Windows.Media.TextFormatting;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit;
+using StackTraceExplorer.Helpers;
 
 namespace StackTraceExplorer
 {

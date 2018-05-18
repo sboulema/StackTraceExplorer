@@ -42,6 +42,10 @@ or the default keybinding
 ## Screenshots
 ![Screenshot](https://i.imgur.com/42mKURv.png)
 
+## Thanks
+- [Resharper](https://www.jetbrains.com/resharper/) (for the initial idea to recreate this)
+- [Terrajobst](https://github.com/terrajobst/stack-trace-explorer) (for some inspiration on optimizing the extension)
+
 ---
 
 ![VS2017 Partner](http://i.imgur.com/wlgwRF1.png)

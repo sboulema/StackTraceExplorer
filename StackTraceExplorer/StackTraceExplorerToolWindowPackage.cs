@@ -2,7 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using EnvDTE;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using StackTraceExplorer.Helpers;
 
 namespace StackTraceExplorer
 {
@@ -17,13 +19,15 @@ namespace StackTraceExplorer
         public const string PackageGuidString = "0485ea98-864e-461f-945f-3c8f9c994842";
         public StackTraceExplorerToolWindowPackage()
         {
-            EnvDteHelper.Dte = GetGlobalService(typeof(DTE)) as DTE;
         }
 
         #region Package Members
 
         protected override async System.Threading.Tasks.Task InitializeAsync(System.Threading.CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            EnvDteHelper.ComponentModel = await GetServiceAsync(typeof(SComponentModel)) as IComponentModel;
+            EnvDteHelper.Dte = await GetServiceAsync(typeof(DTE)) as DTE;
+
             StackTraceExplorerToolWindowCommand.Initialize(this);
             await base.InitializeAsync(cancellationToken, progress);
         }
