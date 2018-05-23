@@ -12,7 +12,8 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-    <TabControl ItemsSource="{Binding StackTraces}" x:Name="StackTraceTabs"                
+    <TabControl ItemsSource="{Binding StackTraces}" x:Name="StackTraceTabs"
+                SelectedIndex="{Binding SelectedStackTraceIndex}"
                 Background="{DynamicResource {x:Static vsShell:EnvironmentColors.MainWindowActiveCaptionBrushKey}}">
         <!-- Change TabControl Grid to control tabstrip -->
         <TabControl.Resources>
@@ -67,7 +68,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel HorizontalAlignment="Left" Margin="3">
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
                         <ToggleButton IsChecked="{Binding WordWrap, Mode=TwoWay}">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
@@ -87,6 +88,22 @@
                                 </ControlTemplate>
                             </ToggleButton.Template>
                         </ToggleButton>
+
+                        <Button Click="ButtonPaste_OnClick" ToolTip="Paste" Margin="3,0,0,0">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Paste}" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button Click="ButtonPasteAsNew_OnClick" ToolTip="Paste as new tab" Margin="3,0,0,0">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.AddTextFile}" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </StackPanel>
 
                     <stacktraceexplorer:StackTraceEditor 

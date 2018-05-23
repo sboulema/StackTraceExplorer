@@ -55,5 +55,15 @@ namespace StackTraceExplorer
             ViewModel.AddStackTrace(trace);
             StackTraceTabs.SelectedIndex = StackTraceTabs.Items.Count - 1;
         }
+
+        private void ButtonPaste_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.SetStackTrace(Clipboard.GetText());
+        }
+
+        private void ButtonPasteAsNew_OnClick(object sender, RoutedEventArgs e)
+        {
+            AddStackTrace(Clipboard.GetText());
+        }
     }
 }

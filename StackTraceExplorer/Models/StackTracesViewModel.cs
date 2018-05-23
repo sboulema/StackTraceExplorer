@@ -25,10 +25,30 @@ namespace StackTraceExplorer.Models
             }
         }
 
+        private int _selectedStackTraceIndex;
+        public int SelectedStackTraceIndex
+        {
+            get
+            {
+                return _selectedStackTraceIndex;
+            }
+            set
+            {
+                _selectedStackTraceIndex = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
         public void AddStackTrace(string trace)
         {
             _stackTraces.Add(new Stacktrace(trace));
             NotifyOfPropertyChange("StackTraces");
+        }
+
+        public void SetStackTrace(string trace)
+        {
+            _stackTraces[_selectedStackTraceIndex].SetStackTrace(trace);
+            //NotifyOfPropertyChange("StackTraces");
         }
     }
 
@@ -38,7 +58,7 @@ namespace StackTraceExplorer.Models
 
         public Stacktrace(string trace = null)
         {
-            Document = new TextDocument { Text = trace };
+            SetStackTrace(trace);
         }
 
         private bool _wordWrap;
@@ -53,6 +73,12 @@ namespace StackTraceExplorer.Models
                 _wordWrap = value;
                 NotifyOfPropertyChange();
             }
+        }
+
+        public void SetStackTrace(string trace)
+        {
+            Document = new TextDocument { Text = trace };
+            NotifyOfPropertyChange("Document");
         }
     }
 }
