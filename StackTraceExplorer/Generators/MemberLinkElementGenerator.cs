@@ -14,11 +14,20 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
         private readonly TextEditor _textEditor;
-        private static readonly Regex MemberRegex = new Regex(@"(\S*\.\S+\s*\(.*\))", RegexOptions.IgnoreCase);
+        private static readonly Regex MemberRegex = new Regex(@"(\S+\.\S+\s*\(.*\))", RegexOptions.IgnoreCase);
+        private int _column;
 
         public MemberLinkElementGenerator(TextEditor textEditor)
         {
             _textEditor = textEditor;
+            _textEditor.MouseHover += _textEditor_MouseHover;
+        }
+
+        private void _textEditor_MouseHover(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var pos = _textEditor.GetPositionFromPoint(e.GetPosition(_textEditor));
+            if (pos == null) return;
+            _column = pos.Value.Column;
         }
 
         private Match FindMatch(int startOffset)
@@ -43,15 +52,16 @@ namespace StackTraceExplorer.Generators
         /// May return null if no element should be constructed.
         public override VisualLineElement ConstructElement(int offset)
         {
-            var m = FindMatch(offset);
+            var match = FindMatch(offset);
             // check whether there's a match exactly at offset
-            if (!m.Success || m.Index != 0) return null;
+            if (!match.Success || match.Index != 0) return null;
+
             return new CustomLinkVisualLineText(
-                new [] { m.Groups[1].Value }, 
-                CurrentContext.VisualLine, 
-                m.Length,
+                new [] { match.Groups[1].Value, _column.ToString() }, 
+                CurrentContext.VisualLine,
+                match.Length,
                 ToBrush(EnvironmentColors.StartPageTextControlLinkSelectedColorKey), 
-                ClickHelper.HandleFunctionLinkClicked, 
+                ClickHelper.HandleMemberLinkClicked, 
                 false,
                 CurrentContext.Document,
                 _textEditor

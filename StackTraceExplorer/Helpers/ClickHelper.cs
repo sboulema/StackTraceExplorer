@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EnvDTE;
@@ -43,23 +44,26 @@ namespace StackTraceExplorer.Helpers
         }
 
         /// <summary>
-        /// Handle click event on a function in a stacktrace
+        /// Handle click event on a member in a stacktrace
         /// </summary>
         /// <param name="input">Function name</param>
         /// <returns>Function found</returns>
-        public static bool HandleFunctionLinkClicked(string[] input)
+        public static bool HandleMemberLinkClicked(string[] input)
         {
             try
             {
-                var workspace = EnvDteHelper.ComponentModel.GetService<VisualStudioWorkspace>();
-                SolutionHelper.Solution = workspace.CurrentSolution;
-                var compilations = SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution).Result;
+                if (SolutionHelper.Compilations == null)
+                {
+                    var workspace = EnvDteHelper.ComponentModel.GetService<VisualStudioWorkspace>();
+                    SolutionHelper.Solution = workspace.CurrentSolution;
+                    var compilations = SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution).Result;
+                }
 
-                var method = SolutionHelper.Resolve(input.FirstOrDefault());
+                var member = SolutionHelper.Resolve(GetInput(input));
 
-                if (method == null) return false;
+                if (member == null) return false;
 
-                var location = method.Locations.FirstOrDefault();
+                var location = member.Locations.FirstOrDefault();
 
                 EnvDteHelper.Dte.ExecuteCommand("File.OpenFile", location.SourceTree.FilePath);
                 (EnvDteHelper.Dte.ActiveDocument.Selection as TextSelection)?.GotoLine(location.GetLineSpan().StartLinePosition.Line + 1);
@@ -98,6 +102,30 @@ namespace StackTraceExplorer.Helpers
             }
 
             return path;
+        }
+
+        public static string GetInput(string[] input)
+        {
+            var column = int.Parse(input.Last());
+            var parts = input.First().Split('.');
+            var result = string.Empty;
+
+            foreach (var part in parts)
+            {
+                if (column > result.Length)
+                {
+                    if (result.Equals(string.Empty))
+                    {
+                        result = part;
+                    }
+                    else
+                    {
+                        result += "." + part;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

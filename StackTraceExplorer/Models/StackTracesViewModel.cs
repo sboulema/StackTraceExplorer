@@ -48,7 +48,6 @@ namespace StackTraceExplorer.Models
         public void SetStackTrace(string trace)
         {
             _stackTraces[_selectedStackTraceIndex].SetStackTrace(trace);
-            //NotifyOfPropertyChange("StackTraces");
         }
     }
 

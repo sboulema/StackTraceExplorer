@@ -112,7 +112,7 @@
                         FontFamily="Consolas"
                         FontSize="10pt"
                         WordWrap="{Binding WordWrap}"
-                        Document="{Binding Document}"                        
+                        Document="{Binding Document}"
                         Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ScrollBarBorderBrushKey}}"
                         Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.StartPageTextSubHeadingSelectedBrushKey}}"
                         Grid.Row="1"/>

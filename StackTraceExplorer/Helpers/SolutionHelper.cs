@@ -34,12 +34,12 @@ namespace StackTraceExplorer.Helpers
             return Compilations;
         }
 
-        public static IMethodSymbol Resolve(string methodName) => 
+        public static ISymbol Resolve(string methodName) => 
             Compilations.Select(c => Resolve(c, methodName))
                         .Where(s => s != null)
                         .FirstOrDefault();
 
-        private static IMethodSymbol Resolve(Compilation compilation, string methodName)
+        private static ISymbol Resolve(Compilation compilation, string methodName)
         {
             var parts = methodName.ToString().Replace(".ctor", "#ctor").Split('.');
 
@@ -57,17 +57,33 @@ namespace StackTraceExplorer.Helpers
             if (currentContainer == null)
                 return null;
 
-            var methodNameAndSignature = parts.Last();
-            var name = GetMethodName(methodNameAndSignature);
-            var methodArity = GetMethodArity(methodNameAndSignature);
-            var parameterTypes = GetMethodParameterTypes(methodNameAndSignature);
+            var name = GetMemberName(parts.Last());
+            var members = currentContainer.GetMembers(name);
 
-            var method = currentContainer.GetMembers(name)
-                                         .OfType<IMethodSymbol>()
-                                         .Where(m => m.Arity == methodArity)
-                                         .Where(m => IsMatch(m, parameterTypes))
-                                         .FirstOrDefault();
-            return method;
+            if (!members.Any()) return null;
+
+            foreach (var member in members)
+            {
+                if (member.Kind == SymbolKind.Method)
+                {
+                    var methodNameAndSignature = parts.Last();
+                    var methodArity = GetMethodArity(methodNameAndSignature);
+                    var parameterTypes = GetMethodParameterTypes(methodNameAndSignature);
+
+                    var method = currentContainer.GetMembers(name)
+                                                 .OfType<IMethodSymbol>()
+                                                 .Where(m => m.Arity == methodArity)
+                                                 .Where(m => IsMatch(m, parameterTypes))
+                                                 .FirstOrDefault();
+                    return method;
+                }
+                else
+                {
+                    return member;
+                }
+            }
+
+            return null;
         }
 
         private static void ParseTypeName(string typeName, out string name, out int arity)
@@ -87,14 +103,17 @@ namespace StackTraceExplorer.Helpers
             }
         }
 
-        private static string GetMethodName(string methodNameAndSignature)
+        private static string GetMemberName(string memberNameAndSignature)
         {
-            var bracket = methodNameAndSignature.IndexOf('[');
-            var parenthesis = methodNameAndSignature.IndexOf('(');
+            var bracket = memberNameAndSignature.IndexOf('[');
+            var parenthesis = memberNameAndSignature.IndexOf('(');
+
+            if (parenthesis == -1) return memberNameAndSignature;
+
             var nameEnd = bracket >= 0 && bracket < parenthesis
                                 ? bracket
                                 : parenthesis;
-            var result = methodNameAndSignature.Substring(0, nameEnd);
+            var result = memberNameAndSignature.Substring(0, nameEnd);
             if (result == "#ctor")
                 return ".ctor";
             return result;
