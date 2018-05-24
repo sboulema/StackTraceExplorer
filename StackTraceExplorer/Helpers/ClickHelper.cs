@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EnvDTE;
@@ -52,13 +51,6 @@ namespace StackTraceExplorer.Helpers
         {
             try
             {
-                if (SolutionHelper.Compilations == null)
-                {
-                    var workspace = EnvDteHelper.ComponentModel.GetService<VisualStudioWorkspace>();
-                    SolutionHelper.Solution = workspace.CurrentSolution;
-                    var compilations = SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution).Result;
-                }
-
                 var member = SolutionHelper.Resolve(GetInput(input));
 
                 if (member == null) return false;
@@ -104,26 +96,17 @@ namespace StackTraceExplorer.Helpers
             return path;
         }
 
+        /// <summary>
+        /// Construct the member identification
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static string GetInput(string[] input)
         {
-            var column = int.Parse(input.Last());
-            var parts = input.First().Split('.');
-            var result = string.Empty;
+            var needle = input[1].TrimEnd('.');
+            var index = input[0].IndexOf(needle);
 
-            foreach (var part in parts)
-            {
-                if (column > result.Length)
-                {
-                    if (result.Equals(string.Empty))
-                    {
-                        result = part;
-                    }
-                    else
-                    {
-                        result += "." + part;
-                    }
-                }
-            }
+            var result = input[0].Substring(0, index + needle.Length);
 
             return result;
         }

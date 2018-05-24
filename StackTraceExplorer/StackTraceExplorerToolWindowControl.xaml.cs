@@ -1,4 +1,6 @@
-﻿using StackTraceExplorer.Models;
+﻿using Microsoft.VisualStudio.LanguageServices;
+using StackTraceExplorer.Helpers;
+using StackTraceExplorer.Models;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -56,6 +58,7 @@ namespace StackTraceExplorer
             StackTraceTabs.SelectedIndex = StackTraceTabs.Items.Count - 1;
         }
 
+        #region Events
         private void ButtonPaste_OnClick(object sender, RoutedEventArgs e)
         {
             ViewModel.SetStackTrace(Clipboard.GetText());
@@ -65,5 +68,13 @@ namespace StackTraceExplorer
         {
             AddStackTrace(Clipboard.GetText());
         }
+
+        private async void TextEditor_TextChanged(object sender, System.EventArgs e)
+        {
+            var workspace = EnvDteHelper.ComponentModel.GetService<VisualStudioWorkspace>();
+            SolutionHelper.Solution = workspace.CurrentSolution;
+            await SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution);
+        }
+        #endregion
     }
 }

@@ -113,6 +113,7 @@
                         FontSize="10pt"
                         WordWrap="{Binding WordWrap}"
                         Document="{Binding Document}"
+                        TextChanged="TextEditor_TextChanged"
                         Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ScrollBarBorderBrushKey}}"
                         Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.StartPageTextSubHeadingSelectedBrushKey}}"
                         Grid.Row="1"/>

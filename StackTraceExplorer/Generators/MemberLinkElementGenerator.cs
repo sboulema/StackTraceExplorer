@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using ICSharpCode.AvalonEdit;
 using StackTraceExplorer.Helpers;
+using System.Linq;
 
 namespace StackTraceExplorer.Generators
 {
@@ -14,20 +15,12 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
         private readonly TextEditor _textEditor;
-        private static readonly Regex MemberRegex = new Regex(@"(\S+\.\S+\s*\(.*\))", RegexOptions.IgnoreCase);
-        private int _column;
+        private static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9]+(?:\.|\(.*?\))))+", RegexOptions.IgnoreCase);       
+        private string _fullMatchText;
 
         public MemberLinkElementGenerator(TextEditor textEditor)
         {
             _textEditor = textEditor;
-            _textEditor.MouseHover += _textEditor_MouseHover;
-        }
-
-        private void _textEditor_MouseHover(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            var pos = _textEditor.GetPositionFromPoint(e.GetPosition(_textEditor));
-            if (pos == null) return;
-            _column = pos.Value.Column;
         }
 
         private Match FindMatch(int startOffset)
@@ -44,7 +37,7 @@ namespace StackTraceExplorer.Generators
         /// Return -1 to signal no interest.
         public override int GetFirstInterestedOffset(int startOffset)
         {
-            var m = FindMatch(startOffset);
+            var m = FindMatch(startOffset);        
             return m.Success ? startOffset + m.Index : -1;
         }
 
@@ -56,16 +49,31 @@ namespace StackTraceExplorer.Generators
             // check whether there's a match exactly at offset
             if (!match.Success || match.Index != 0) return null;
 
-            return new CustomLinkVisualLineText(
-                new [] { match.Groups[1].Value, _column.ToString() }, 
+            // The first match returns the full method definition
+            if (string.IsNullOrEmpty(_fullMatchText))
+            {
+                _fullMatchText = match.Value;
+            }
+
+            var lineElement = new CustomLinkVisualLineText(
+                new [] { _fullMatchText, match.Groups[1].Captures[0].Value }, 
                 CurrentContext.VisualLine,
-                match.Length,
+                match.Groups[1].Captures[0].Value.TrimEnd('.').Length,
                 ToBrush(EnvironmentColors.StartPageTextControlLinkSelectedColorKey), 
                 ClickHelper.HandleMemberLinkClicked, 
                 false,
                 CurrentContext.Document,
                 _textEditor
             );
+
+            // If we have created elements for the entire definition, reset. 
+            // So we can create elements for more definitions
+            if (_fullMatchText.Split('.').Last().Equals(match.Groups[1].Captures[0].Value))
+            {
+                _fullMatchText = null;
+            }
+
+            return lineElement;
         }
 
         private static SolidColorBrush ToBrush(ThemeResourceKey key)

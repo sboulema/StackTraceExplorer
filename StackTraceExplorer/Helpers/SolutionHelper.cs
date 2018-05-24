@@ -13,11 +13,6 @@ namespace StackTraceExplorer.Helpers
         public static Solution Solution;
         public static ImmutableArray<Compilation> Compilations;
 
-        public static async Task<ImmutableArray<Compilation>> GetCompilationsAsync()
-        {
-            return await GetCompilationsAsync(Solution);
-        }
-
         public static async Task<ImmutableArray<Compilation>> GetCompilationsAsync(Solution solution)
         {
             var compilationTasks = new Task<Compilation>[solution.ProjectIds.Count];
