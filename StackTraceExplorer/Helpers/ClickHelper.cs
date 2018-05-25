@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using EnvDTE;
-using Microsoft.VisualStudio.LanguageServices;
 
 namespace StackTraceExplorer.Helpers
 {

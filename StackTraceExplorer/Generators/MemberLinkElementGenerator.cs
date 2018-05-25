@@ -15,7 +15,9 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
         private readonly TextEditor _textEditor;
-        private static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9]+(?:\.|\(.*?\))))+", RegexOptions.IgnoreCase);       
+        //private static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9]+(?:\.|\(.*?\))))+", RegexOptions.IgnoreCase);
+        private static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9.]+\(.*?\)))+", RegexOptions.IgnoreCase);       
+        
         private string _fullMatchText;
 
         public MemberLinkElementGenerator(TextEditor textEditor)
