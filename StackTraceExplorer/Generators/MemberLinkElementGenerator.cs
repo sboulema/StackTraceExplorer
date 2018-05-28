@@ -15,9 +15,9 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
         private readonly TextEditor _textEditor;
-        //private static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9]+(?:\.|\(.*?\))))+", RegexOptions.IgnoreCase);
-        private static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9.]+\(.*?\)))+", RegexOptions.IgnoreCase);       
-        
+        //public static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9]+(?:\.|\(.*?\))))+", RegexOptions.IgnoreCase);
+        public static readonly Regex MemberRegex = new Regex(@"([A-Za-z0-9<>_]+\.)*([A-Za-z0-9<>_]+\(.*?\))", RegexOptions.IgnoreCase);
+
         private string _fullMatchText;
 
         public MemberLinkElementGenerator(TextEditor textEditor)
@@ -57,10 +57,13 @@ namespace StackTraceExplorer.Generators
                 _fullMatchText = match.Value;
             }
 
+            var captures = match.Groups[1].Captures.Cast<Capture>().Select(c => c.Value).ToList();
+            captures.Add(match.Groups[2].Value);
+
             var lineElement = new CustomLinkVisualLineText(
-                new [] { _fullMatchText, match.Groups[1].Captures[0].Value }, 
+                new [] { _fullMatchText, captures.First() }, 
                 CurrentContext.VisualLine,
-                match.Groups[1].Captures[0].Value.TrimEnd('.').Length,
+                captures.First().TrimEnd('.').Length,
                 ToBrush(EnvironmentColors.StartPageTextControlLinkSelectedColorKey), 
                 ClickHelper.HandleMemberLinkClicked, 
                 false,
@@ -70,7 +73,7 @@ namespace StackTraceExplorer.Generators
 
             // If we have created elements for the entire definition, reset. 
             // So we can create elements for more definitions
-            if (_fullMatchText.Split('.').Last().Equals(match.Groups[1].Captures[0].Value))
+            if (_fullMatchText.Split('.').Last().Equals(captures.First()))
             {
                 _fullMatchText = null;
             }

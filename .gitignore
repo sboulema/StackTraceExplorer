@@ -4,3 +4,5 @@
 /packages
 /StackTraceExplorer/*.user
 /.vs
+/StackTraceExplorer.Tests/bin
+/StackTraceExplorer.Tests/obj
