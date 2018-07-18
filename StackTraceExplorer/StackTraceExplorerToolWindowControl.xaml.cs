@@ -20,10 +20,7 @@ namespace StackTraceExplorer
             ViewModel = new StackTracesViewModel();
             DataContext = ViewModel;
 
-            if (!ViewModel.StackTraces.Any())
-            {
-                AddStackTrace();
-            }
+            EnsureOneStackTrace();
         }
 
         private void StackTraceExplorerToolWindowControl_KeyDown(object sender, KeyEventArgs e)
@@ -40,8 +37,16 @@ namespace StackTraceExplorer
             if (StackTraceTabs.SelectedIndex >= 0)
             {
                 ViewModel.StackTraces.RemoveAt(StackTraceTabs.SelectedIndex);
-            }        
+            }
 
+            EnsureOneStackTrace();
+        }
+
+        /// <summary>
+        /// Always have one tab available in the toolwindow
+        /// </summary>
+        public void EnsureOneStackTrace()
+        {
             if (!ViewModel.StackTraces.Any())
             {
                 AddStackTrace();
