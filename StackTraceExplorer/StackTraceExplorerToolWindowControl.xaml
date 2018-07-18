@@ -104,6 +104,14 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
+
+                        <Button Click="ButtonOpenFile_OnClick" ToolTip="Open stacktrace from file as new tab" Margin="3,0,0,0">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Open}" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </StackPanel>
 
                     <stacktraceexplorer:StackTraceEditor 
