@@ -48,7 +48,7 @@ namespace StackTraceExplorer.Generators
             // check whether there's a match exactly at offset
             if (!m.Success || m.Index != 0) return null;
             if (!File.Exists(ClickHelper.Find(m.Groups[1].Value))) return null;
-            return new CustomLinkVisualLineText(
+            var line = new CustomLinkVisualLineText(
                 new [] { m.Groups[1].Value, m.Groups[2].Value }, 
                 CurrentContext.VisualLine, 
                 m.Groups[0].Length, 
@@ -58,6 +58,13 @@ namespace StackTraceExplorer.Generators
                 CurrentContext.Document,
                 _textEditor
             );
+
+            if (EnvDteHelper.ViewModel.IsClickedLine(line))
+            {
+                line.ForegroundBrush = ToBrush(EnvironmentColors.FileTabButtonProvisionalHoverInactiveColorKey);
+            }
+
+            return line;
         }
 
         private static SolidColorBrush ToBrush(ThemeResourceKey key)

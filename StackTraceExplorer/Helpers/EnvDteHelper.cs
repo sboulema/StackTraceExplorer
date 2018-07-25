@@ -1,6 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Generic;
+using System.Windows.Input;
 using EnvDTE;
 using Microsoft.VisualStudio.ComponentModelHost;
+using StackTraceExplorer.Models;
 using TextEditor = ICSharpCode.AvalonEdit.TextEditor;
 
 namespace StackTraceExplorer.Helpers
@@ -12,6 +14,7 @@ namespace StackTraceExplorer.Helpers
         public static TextEditor TextEditor;
         public static int CurrentColumn;
         public static IComponentModel ComponentModel;
+        public static StackTracesViewModel ViewModel;
 
         public static void SetCurrentMouseOffset(QueryCursorEventArgs e)
         {

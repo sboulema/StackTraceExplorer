@@ -16,7 +16,7 @@ namespace StackTraceExplorer
     /// </summary>
     public class CustomLinkVisualLineText : VisualLineText
     {
-        private string[] Link { get; }
+        public string[] Link { get; }
         public bool RequireControlModifierForClick { get; set; }
         public Brush ForegroundBrush { get; set; }
         public Func<string[], bool> ClickFunction { get; set; }
@@ -84,8 +84,12 @@ namespace StackTraceExplorer
         {
             if (e.ChangedButton == MouseButton.Left && !e.Handled && LinkIsClickable())
             {
-                ClickFunction(Link);
                 e.Handled = true;
+
+                ClickFunction(Link);
+                EnvDteHelper.ViewModel.AddClickedLine(this);
+
+                (e.Source as TextView).Redraw();
             }
         }
 

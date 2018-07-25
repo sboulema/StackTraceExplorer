@@ -21,6 +21,7 @@ namespace StackTraceExplorer
 
             ViewModel = new StackTracesViewModel();
             DataContext = ViewModel;
+            EnvDteHelper.ViewModel = ViewModel;
 
             EnsureOneStackTrace();
         }
