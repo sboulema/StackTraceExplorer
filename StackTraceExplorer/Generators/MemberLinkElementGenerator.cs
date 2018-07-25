@@ -78,6 +78,11 @@ namespace StackTraceExplorer.Generators
                 _fullMatchText = null;
             }
 
+            if (EnvDteHelper.ViewModel.IsClickedLine(lineElement))
+            {
+                lineElement.ForegroundBrush = ToBrush(EnvironmentColors.StatusBarNoSolutionColorKey);
+            }
+
             return lineElement;
         }
 

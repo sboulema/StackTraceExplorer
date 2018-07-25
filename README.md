@@ -4,7 +4,7 @@ Parse those pesty unreadable long stack traces. Stack Trace Explorer provides sy
 [![Beerpay](https://beerpay.io/sboulema/StackTraceExplorer/badge.svg?style=flat)](https://beerpay.io/sboulema/StackTraceExplorer)
 
 ## Installing
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SamirBoulema.StackTraceExplorer) ![Marketplace](https://img.shields.io/vscode-marketplace/v/SamirBoulema.StackTraceExplorer.svg)
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SamirBoulema.StackTraceExplorer)
 
 [Github Releases](https://github.com/sboulema/StackTraceExplorer/releases)
 
@@ -31,9 +31,15 @@ or the default keybinding
 - Tabs
 
 ### Opening a new tab
-- Copy a stack trace to your clipboard
-- Select a tab, make sure your cursor is not in the text editor
-- Paste your stack trace with `Ctrl + V`
+There are multiple ways open opening new tabs to show your stack traces:
+
+**Copy a stack trace to your clipboard:**
+- Click the paste as new tab but
+- Select a tab, make sure your cursor is not in the text editor, Paste your stack trace with `Ctrl + V`
+
+**Stack trace from file:**
+- Click the open file button
+- Drag & drop the file to the toolwindow
 
 ## Supported stack trace formats
 - Visual Studio

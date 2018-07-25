@@ -61,7 +61,7 @@ namespace StackTraceExplorer.Generators
 
             if (EnvDteHelper.ViewModel.IsClickedLine(line))
             {
-                line.ForegroundBrush = ToBrush(EnvironmentColors.FileTabButtonProvisionalHoverInactiveColorKey);
+                line.ForegroundBrush = ToBrush(EnvironmentColors.StatusBarNoSolutionColorKey);
             }
 
             return line;
