@@ -1,7 +1,8 @@
 # Stack Trace Explorer
 Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.
 
-[![Beerpay](https://beerpay.io/sboulema/StackTraceExplorer/badge.svg?style=flat)](https://beerpay.io/sboulema/StackTraceExplorer)
+[![Beerpay](https://img.shields.io/beerpay/sboulema/StackTraceExplorer.svg?style=flat)](https://beerpay.io/sboulema/StackTraceExplorer)
+
 
 ## Installing
 [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SamirBoulema.StackTraceExplorer)
@@ -9,9 +10,6 @@ Parse those pesty unreadable long stack traces. Stack Trace Explorer provides sy
 [Github Releases](https://github.com/sboulema/StackTraceExplorer/releases)
 
 [Open VSIX Gallery](http://vsixgallery.com/extension/StackTraceExplorer.Samir%20Boulema/)
-
-[AppVeyor](https://ci.appveyor.com/project/sboulema/stacktraceexplorer)
-[![Build status](https://ci.appveyor.com/api/projects/status/topfx6jokbg26qs9?svg=true)](https://ci.appveyor.com/project/sboulema/stacktraceexplorer)
 
 ## Usage
 You can find the Stack Trace Explorer at
