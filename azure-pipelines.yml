@@ -10,12 +10,12 @@ trigger:
   tags: none
 
 variables:
-  patch: $[counter('versioncounter', 41)]
+  patch: $[counter('versioncounter', 36)]
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-name: 4.9.$(patch)
+name: 1.12.$(patch)
 
 steps:
 - task: NuGetToolInstaller@0
