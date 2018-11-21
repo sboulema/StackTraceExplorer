@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.LanguageServices;
+﻿using ICSharpCode.AvalonEdit;
+using Microsoft.VisualStudio.LanguageServices;
 using StackTraceExplorer.Helpers;
 using StackTraceExplorer.Models;
 using System.IO;
@@ -78,11 +79,19 @@ namespace StackTraceExplorer
 
         private void ButtonOpenFile_OnClick(object sender, RoutedEventArgs e) => AddStackTraceFromFile();
 
+        // In use through XAML binding
         private async void TextEditor_TextChanged(object sender, System.EventArgs e)
         {
+            var textEditor = sender as TextEditor;
+            var trace = textEditor.Document.Text;
+
+            textEditor.TextChanged -= TextEditor_TextChanged;
+            ViewModel.SetStackTrace(trace);
+            textEditor.TextChanged += TextEditor_TextChanged;
+
             var workspace = EnvDteHelper.ComponentModel.GetService<VisualStudioWorkspace>();
             SolutionHelper.Solution = workspace.CurrentSolution;
-            await SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution);
+            SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution);
         }
 
         private void StackTraceExplorerToolWindowControl_Drop(object sender, DragEventArgs e)

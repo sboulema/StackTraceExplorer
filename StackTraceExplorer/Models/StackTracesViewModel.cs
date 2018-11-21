@@ -1,8 +1,10 @@
 ﻿using Caliburn.Micro;
 using ICSharpCode.AvalonEdit.Document;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace StackTraceExplorer.Models
 {
@@ -81,12 +83,22 @@ namespace StackTraceExplorer.Models
 
         public void SetStackTrace(string trace)
         {
-            Document = new TextDocument { Text = trace };
+            Document = new TextDocument { Text = WrapStackTrace(trace) };
             NotifyOfPropertyChange("Document");
         }
 
         public void AddClickedLine(CustomLinkVisualLineText line) => ClickedLines.Add(line);
 
         public bool IsClickedLine(CustomLinkVisualLineText line) => ClickedLines.Any(l => l.Link.SequenceEqual(line.Link));
+
+        private string WrapStackTrace(string trace)
+        {
+            if (!trace.Contains(Environment.NewLine))
+            {
+                return string.Join(Environment.NewLine, Regex.Split(trace, @"(?=\s+at\s+)"));
+            }
+
+            return trace;
+        }
     }
 }
