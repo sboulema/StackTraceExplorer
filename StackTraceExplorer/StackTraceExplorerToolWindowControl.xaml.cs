@@ -83,7 +83,9 @@ namespace StackTraceExplorer
         private async void TextEditor_TextChanged(object sender, System.EventArgs e)
         {
             var textEditor = sender as TextEditor;
-            var trace = textEditor.Document.Text;
+            var trace = textEditor.Document?.Text;
+
+            if (string.IsNullOrEmpty(trace)) return;
 
             textEditor.TextChanged -= TextEditor_TextChanged;
             ViewModel.SetStackTrace(trace);
@@ -91,7 +93,7 @@ namespace StackTraceExplorer
 
             var workspace = EnvDteHelper.ComponentModel.GetService<VisualStudioWorkspace>();
             SolutionHelper.Solution = workspace.CurrentSolution;
-            SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution);
+            await SolutionHelper.GetCompilationsAsync(workspace.CurrentSolution);
         }
 
         private void StackTraceExplorerToolWindowControl_Drop(object sender, DragEventArgs e)
