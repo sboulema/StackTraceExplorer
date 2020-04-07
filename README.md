@@ -1,7 +1,7 @@
 # Stack Trace Explorer
 Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.
 
-[![Beerpay](https://img.shields.io/beerpay/sboulema/StackTraceExplorer.svg?style=flat)](https://beerpay.io/sboulema/StackTraceExplorer)
+[![Donate](https://img.shields.io/badge/%F0%9F%92%B0-Donate-green.svg?style=flat)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=X3S369MR8JYCL&source=url)
 
 
 ## Installing
