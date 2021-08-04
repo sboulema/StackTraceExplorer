@@ -40,15 +40,15 @@ steps:
 - task: VSBuild@1
   displayName: 'Build Vsix'
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    solution: '**/*.sln'
+    platform: 'Any CPU'
+    configuration: 'Release'
 
 - task: VSTest@2
   displayName: 'Run Tests'
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    platform: 'Any CPU'
+    configuration: 'Release'
 
 - task: CopyFiles@2
   displayName: 'Copy Artifacts to Staging'
