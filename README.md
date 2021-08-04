@@ -1,8 +1,7 @@
 # Stack Trace Explorer
 Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.
 
-[![Donate](https://img.shields.io/badge/%F0%9F%92%B0-Donate-green.svg?style=flat)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=X3S369MR8JYCL&source=url)
-
+[![Sponsor](https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors)](https://github.com/sponsors/sboulema)
 
 ## Installing
 [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SamirBoulema.StackTraceExplorer)
@@ -49,7 +48,3 @@ There are multiple ways open opening new tabs to show your stack traces:
 ## Thanks
 - [Resharper](https://www.jetbrains.com/resharper/) (for the initial idea to recreate this)
 - [Terrajobst](https://github.com/terrajobst/stack-trace-explorer) (for some inspiration on optimizing the extension)
-
----
-
-![VS2017 Partner](http://i.imgur.com/wlgwRF1.png)
