@@ -70,5 +70,5 @@ steps:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
     artifactName: '$(system.teamProject)'
 
-- task: VsixToolsUploadVsix@1
+- task: VsixToolsUploadVsix@2
   displayName: 'Upload Vsix to Open Gallery'
