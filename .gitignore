@@ -6,3 +6,7 @@
 /.vs
 /StackTraceExplorer.Tests/bin
 /StackTraceExplorer.Tests/obj
+/StackTraceExplorer.VS2019/bin
+/StackTraceExplorer.VS2019/obj
+/StackTraceExplorer.VS2022/bin
+/StackTraceExplorer.VS2022/obj
