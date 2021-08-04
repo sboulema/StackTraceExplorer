@@ -1,0 +1,28 @@
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
+  <Metadata>
+    <Identity Id="678efcd8-0ba0-47f5-85ed-52f33ce1bb4c" Version="2.0" Language="en-US" Publisher="Samir L. Boulema" />
+    <DisplayName>Stack Trace Explorer 2022</DisplayName>
+    <Description xml:space="preserve">Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.</Description>
+    <MoreInfo>https://marketplace.visualstudio.com/vsgallery/0886a4d9-35e3-431a-b86c-bf0e346ad036</MoreInfo>
+    <License>Resources\LICENSE</License>
+    <GettingStartedGuide>https://github.com/sboulema/StackTraceExplorer/blob/master/README.md</GettingStartedGuide>
+    <ReleaseNotes>https://github.com/sboulema/StackTraceExplorer/releases</ReleaseNotes>
+    <Icon>Resources\CallStackWindow_256x.png</Icon>
+    <PreviewImage>Resources\Preview.png</PreviewImage>
+    <Tags>stacktrace, debug</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.5,)" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" Path="StackTraceExplorer.pkgdef" />
+  </Assets>
+</PackageManifest>

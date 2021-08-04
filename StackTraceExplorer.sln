@@ -1,33 +1,62 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28210.120
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31521.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE2CB841-FBAB-42FF-8233-E762CC77D778}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		azure-pipelines.yml = azure-pipelines.yml
 		publish-manifest.json = publish-manifest.json
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackTraceExplorer", "StackTraceExplorer\StackTraceExplorer.csproj", "{393FF8FD-00C8-471C-8C5A-EA97B229886A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackTraceExplorer.VS2019", "StackTraceExplorer.VS2019\StackTraceExplorer.VS2019.csproj", "{393FF8FD-00C8-471C-8C5A-EA97B229886A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackTraceExplorer.Tests", "StackTraceExplorer.Tests\StackTraceExplorer.Tests.csproj", "{865D31DF-A8CC-4C50-9EB5-AA04E555360B}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "StackTraceExplorer.Shared", "StackTraceExplorer.Shared\StackTraceExplorer.Shared.shproj", "{2732F00A-56DA-436F-8CC4-BAEA756330D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackTraceExplorer.VS2022", "StackTraceExplorer.VS2022\StackTraceExplorer.VS2022.csproj", "{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		StackTraceExplorer.Shared\StackTraceExplorer.Shared.projitems*{2732f00a-56da-436f-8cc4-baea756330d3}*SharedItemsImports = 13
+		StackTraceExplorer.Shared\StackTraceExplorer.Shared.projitems*{393ff8fd-00c8-471c-8c5a-ea97b229886a}*SharedItemsImports = 4
+		StackTraceExplorer.Shared\StackTraceExplorer.Shared.projitems*{3ea63efb-6a5b-4cda-9f53-14d94c0db12b}*SharedItemsImports = 4
+		StackTraceExplorer.Shared\StackTraceExplorer.Shared.projitems*{865d31df-a8cc-4c50-9eb5-aa04e555360b}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Debug|x86.ActiveCfg = Debug|x86
+		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Debug|x86.Build.0 = Debug|x86
 		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Release|x86.ActiveCfg = Release|x86
+		{393FF8FD-00C8-471C-8C5A-EA97B229886A}.Release|x86.Build.0 = Release|x86
 		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Debug|x86.Build.0 = Debug|Any CPU
 		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Release|x86.ActiveCfg = Release|Any CPU
+		{865D31DF-A8CC-4C50-9EB5-AA04E555360B}.Release|x86.Build.0 = Release|Any CPU
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Debug|x86.ActiveCfg = Debug|x86
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Debug|x86.Build.0 = Debug|x86
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Release|x86.ActiveCfg = Release|x86
+		{3EA63EFB-6A5B-4CDA-9F53-14D94C0DB12B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

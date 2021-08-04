@@ -1,0 +1,87 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Repos\\StackTraceExplorer\\StackTraceExplorer.VS2019\\StackTraceExplorer.VS2019.csproj": {}
+  },
+  "projects": {
+    "C:\\Repos\\StackTraceExplorer\\StackTraceExplorer.VS2019\\StackTraceExplorer.VS2019.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Repos\\StackTraceExplorer\\StackTraceExplorer.VS2019\\StackTraceExplorer.VS2019.csproj",
+        "projectName": "StackTraceExplorer.VS2019",
+        "projectPath": "C:\\Repos\\StackTraceExplorer\\StackTraceExplorer.VS2019\\StackTraceExplorer.VS2019.csproj",
+        "packagesPath": "C:\\Users\\sboulema\\.nuget\\packages\\",
+        "outputPath": "C:\\Repos\\StackTraceExplorer\\StackTraceExplorer.VS2019\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Repos\\StackTraceExplorer\\NuGet.Config",
+          "C:\\Users\\sboulema\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://ci.appveyor.com/nuget/community-visualstudio-toolkit": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "dependencies": {
+            "AvalonEdit": {
+              "target": "Package",
+              "version": "[6.1.2.30, )"
+            },
+            "Caliburn.Micro": {
+              "target": "Package",
+              "version": "[4.0.173, )"
+            },
+            "Community.VisualStudio.Toolkit": {
+              "target": "Package",
+              "version": "[15.0.76.257-pre, )"
+            },
+            "Community.VisualStudio.VSCT": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[16.0.29.6, )"
+            },
+            "Microsoft.CodeAnalysis": {
+              "target": "Package",
+              "version": "[2.10.0, )"
+            },
+            "Microsoft.VSSDK.BuildTools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[17.0.3177-preview3, )"
+            },
+            "Microsoft.VisualStudio.LanguageServices": {
+              "target": "Package",
+              "version": "[2.10.0, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

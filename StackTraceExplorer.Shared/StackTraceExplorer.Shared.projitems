@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>2732f00a-56da-436f-8cc4-baea756330d3</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>StackTraceExplorer.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CustomLinkVisualLineText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Generators\FileLinkElementGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Generators\MemberLinkElementGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ClickHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SolutionHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\TraceHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\StackTracesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StackTraceEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StackTraceExplorerToolWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StackTraceExplorerToolWindowCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StackTraceExplorerToolWindowControl.xaml.cs">
+      <DependentUpon>StackTraceExplorerToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)StackTraceExplorerToolWindowPackage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)StackTraceExplorer.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)StackTraceExplorerToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

@@ -1,33 +1,24 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/vsts/pipelines/apps/windows/dot-net
-
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: 'windows-latest'
 
 trigger:
   branches:
     include:
     - master
-# tags: none
+    - feature/*
 
-variables:
-  patch: $[counter('versioncounter', 36)]
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-
-name: 1.12.$(patch)
+name: 2.0.$(Build.BuildId)
 
 steps:
-- task: NuGetToolInstaller@0
-
 - task: NuGetCommand@2
+  displayName: 'NuGet restore'
   inputs:
-    restoreSolution: '$(solution)'
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'config'
+    nugetConfigPath: 'nuget.config'
 
-- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-Task.Assembly-Info-Task@1
+- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-Task.Assembly-Info-NetFramework@2
   displayName: 'Update Assembly Version'
   inputs:
     VersionNumber: '$(Build.BuildNumber)'
@@ -35,9 +26,15 @@ steps:
     InformationalVersion: '$(Build.BuildNumber)'
 
 - task: VsixToolsUpdateVersion@1
-  displayName: 'Update Vsix Version'
+  displayName: 'Update Vsix Version (VS2019)'
   inputs:
-    FileName: $(Build.SourcesDirectory)\$(system.teamProject)\source.extension.vsixmanifest
+    FileName: $(Build.SourcesDirectory)\StackTraceExplorer.VS2019\source.extension.vsixmanifest
+    VersionNumber: '$(Build.BuildNumber)'
+
+- task: VsixToolsUpdateVersion@1
+  displayName: 'Update Vsix Version (VS2022)'
+  inputs:
+    FileName: $(Build.SourcesDirectory)\StackTraceExplorer.VS2022\source.extension.vsixmanifest
     VersionNumber: '$(Build.BuildNumber)'
 
 - task: VSBuild@1
