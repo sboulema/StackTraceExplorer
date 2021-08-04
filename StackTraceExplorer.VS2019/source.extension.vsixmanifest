@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="StackTraceExplorer.Samir Boulema" Version="2.0" Language="en-US" Publisher="Samir L. Boulema" />
+        <Identity Id="StackTraceExplorer.Samir Boulema" Version="2.0" Language="en-US" Publisher="Samir Boulema" />
         <DisplayName>Stack Trace Explorer 2019</DisplayName>
         <Description xml:space="preserve">Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/vsgallery/0886a4d9-35e3-431a-b86c-bf0e346ad036</MoreInfo>
