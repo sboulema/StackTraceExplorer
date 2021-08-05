@@ -92,6 +92,12 @@ namespace StackTraceExplorer.Helpers
                 StringSplitOptions.RemoveEmptyEntries);
 
             var solution = await VS.Solutions.GetCurrentSolutionAsync();
+
+            if (solution == null)
+            {
+                return string.Empty;
+            }
+
             var solutionDir = new DirectoryInfo(Path.GetDirectoryName(solution.FullPath));
 
             for (var i = 0; i < pathParts.Length; i++)

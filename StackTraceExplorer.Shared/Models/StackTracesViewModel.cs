@@ -87,9 +87,21 @@ namespace StackTraceExplorer.Models
 
         private string WrapStackTrace(string trace)
         {
-            return !trace.Contains(Environment.NewLine)
-                ? string.Join(Environment.NewLine, Regex.Split(trace, @"(?=\s+at\s+)"))
-                : trace;
+            if (string.IsNullOrEmpty(trace))
+            {
+                return string.Empty;
+            }
+
+            if (!trace.Contains(Environment.NewLine))
+            {
+                var lines = Regex
+                    .Split(trace, @"(?=\s+at\s+)")
+                    .Where(line => !string.IsNullOrEmpty(line) &&
+                                   !string.IsNullOrWhiteSpace(line));
+                return string.Join(Environment.NewLine, lines);
+            }
+
+            return trace;
         }
     }
 }
