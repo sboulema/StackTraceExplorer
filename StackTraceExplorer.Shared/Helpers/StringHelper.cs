@@ -1,0 +1,44 @@
+﻿namespace StackTraceExplorer.Helpers
+{
+    using System;
+    using System.IO;
+    using System.Linq;
+
+    public static class StringHelper
+    {
+        public static string FindLongestMatchingSuffix(string searchString, string[] candidates, StringComparison comparisonType)
+        {
+            int nextSeparatorIndex = 0;
+            int previousSeparatorIndex = -1;
+            while (true)
+            {
+                string suffixToSearchFor;
+                if (previousSeparatorIndex == -1)
+                {
+                    // Search for the whole string the first time
+                    suffixToSearchFor = searchString;
+                }
+                else
+                {
+                    nextSeparatorIndex = searchString.IndexOf(Path.DirectorySeparatorChar.ToString(), previousSeparatorIndex);
+                    if (nextSeparatorIndex == -1)
+                    {
+                        break;
+                    }
+
+                    suffixToSearchFor = searchString.Substring(nextSeparatorIndex);
+                }
+
+                string match = candidates.FirstOrDefault(s => s.EndsWith(suffixToSearchFor, comparisonType));
+                if (match != null)
+                {
+                    return match;
+                }
+
+                previousSeparatorIndex = nextSeparatorIndex + 1;
+            }
+
+            throw new ArgumentException("None of the candidates match", nameof(candidates));
+        }
+    }
+}

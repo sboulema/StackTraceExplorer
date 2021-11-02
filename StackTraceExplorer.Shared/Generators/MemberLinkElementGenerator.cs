@@ -14,13 +14,13 @@ namespace StackTraceExplorer.Generators
         // To use this class:
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
-        private readonly TextEditor _textEditor;
+        private readonly StackTraceEditor _textEditor;
         //public static readonly Regex MemberRegex = new Regex(@"(?:([A-Za-z0-9]+(?:\.|\(.*?\))))+", RegexOptions.IgnoreCase);
-        public static readonly Regex MemberRegex = new Regex(@"([A-Za-z0-9<>_]+\.)*([A-Za-z0-9<>_]+\(.*?\))", RegexOptions.IgnoreCase);
+        public static readonly Regex MemberRegex = new Regex(@"([A-Za-z0-9<>_`]+\.)*([A-Za-z0-9<>_\[\]]+\(.*?\))", RegexOptions.IgnoreCase);
 
         private string _fullMatchText;
 
-        public MemberLinkElementGenerator(TextEditor textEditor)
+        public MemberLinkElementGenerator(StackTraceEditor textEditor)
         {
             _textEditor = textEditor;
         }
