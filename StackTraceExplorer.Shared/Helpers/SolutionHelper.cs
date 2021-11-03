@@ -10,8 +10,8 @@ namespace StackTraceExplorer.Helpers
 {
     public static class SolutionHelper
     {
-        public static Solution Solution;
-        public static ImmutableArray<Compilation> Compilations;
+        public static Solution Solution { get; set; }
+        public static ImmutableArray<Compilation> Compilations { get; set; }
 
         public static async Task<ImmutableArray<Compilation>> GetCompilationsAsync(Solution solution)
         {
@@ -34,7 +34,7 @@ namespace StackTraceExplorer.Helpers
             return symbol;
         }
 
-        private static ISymbol Resolve(Compilation compilation, string methodName)
+        public static ISymbol Resolve(Compilation compilation, string methodName)
         {
             var parts = methodName.Replace(".ctor", "#ctor").Split('.');
 
@@ -62,25 +62,30 @@ namespace StackTraceExplorer.Helpers
                 return null;
             }
 
+            var lastPart = parts.Last();
             foreach (var member in members)
             {
-                if (member.Kind == SymbolKind.Method)
+                switch (member.Kind)
                 {
-                    var methodNameAndSignature = parts.Last();
-                    var methodArity = GetMethodArity(methodNameAndSignature);
-                    var parameterTypes = GetMethodParameterTypes(methodNameAndSignature);
+                    case SymbolKind.Method:
+                        var methodArity = GetMethodArity(lastPart);
+                        var parameterTypes = GetMethodParameterTypes(lastPart);
 
-                    var method = currentContainer
-                        .GetMembers(name)
-                        .OfType<IMethodSymbol>()
-                        .Where(m => m.Arity == methodArity)
-                        .FirstOrDefault(m => IsMatch(m, parameterTypes));
+                        var method = currentContainer
+                            .GetMembers(name)
+                            .OfType<IMethodSymbol>()
+                            .FirstOrDefault(m => m.Arity == methodArity && IsMatch(m, parameterTypes));
 
-                    return method;
-                }
-                else
-                {
-                    return member;
+                        return method;
+                    case SymbolKind.NamedType:
+                        ParseTypeName(lastPart, out _, out int typeArity);
+                        if (member is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.Arity == typeArity)
+                        {
+                            return member;
+                        }
+                        break;
+                    default:
+                        return member;
                 }
             }
 

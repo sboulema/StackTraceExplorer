@@ -20,7 +20,7 @@ namespace StackTraceExplorer.Helpers
         /// <returns>File found</returns>
         public static void HandleFileLinkClicked(string[] input, StackTraceEditor stackTraceEditor)
         {
-            _ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 var start = DateTime.UtcNow;
                 OutputWindowPane outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
@@ -30,8 +30,9 @@ namespace StackTraceExplorer.Helpers
 
                     if (!File.Exists(path))
                     {
-                        await VS.StatusBar.ShowMessageAsync($"FileLinkClicked: {input[0]}. Unable to resolve path");
-                        await outputWindow.WriteLineAsync($"FileLinkClicked: {input[0]}. Unable to resolve path");
+                        string message = $"FileLinkClicked: {input[0]}: Unable to resolve file.";
+                        await VS.StatusBar.ShowMessageAsync(message);
+                        await outputWindow.WriteLineAsync(message);
                         return;
                     }
 
@@ -60,7 +61,7 @@ namespace StackTraceExplorer.Helpers
         /// <param name="input">Function name</param>
         public static void HandleMemberLinkClicked(string[] input, StackTraceEditor stackTraceEditor)
         {
-            _ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 var start = DateTime.UtcNow;
                 string typeOrMemberName = GetTypeOrMemberName(input);
@@ -71,7 +72,9 @@ namespace StackTraceExplorer.Helpers
 
                     if (member == null)
                     {
-                        await outputWindow.WriteLineAsync($"MemberLinkClicked: {typeOrMemberName} unable to resolve name.");
+                        string message = $"MemberLinkClicked: {typeOrMemberName}: unable to resolve member.";
+                        await VS.StatusBar.ShowMessageAsync(message);
+                        await outputWindow.WriteLineAsync(message);
                         return;
                     }
 

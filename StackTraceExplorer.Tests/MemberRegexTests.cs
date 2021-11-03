@@ -40,6 +40,25 @@ namespace StackTraceExplorer.Tests
             "Company.SomeType`1.StepCallback(IAsyncResult result)",
             new[] { "Company.", "SomeType`1." },
             "StepCallback(IAsyncResult result)")]
+        [DataRow(
+            @" at StackTraceExplorer.TestClass.End[T,V](String s) in D:\StackTraceExplorer\TestClass.cs:line 38",
+            "StackTraceExplorer.TestClass.End[T,V](String s)",
+            new[] { "StackTraceExplorer.", "TestClass." },
+            "End[T,V](String s)")]
+        [DataRow(
+            "  at SolutionHelperTests.ClassWithGenericTypeArgs`2.StaticMethod[V]()",
+            "SolutionHelperTests.ClassWithGenericTypeArgs`2.StaticMethod[V]()",
+            new[] { "SolutionHelperTests.", "ClassWithGenericTypeArgs`2.", },
+            "StaticMethod[V]()")]
+        [DataRow(
+            "  at StackTraceExplorer.Tests.SolutionHelperTests.<>c.<CreateSomeStackTraces>b__6_3() in D:\\SolutionHelperTests.cs:line 52",
+            "StackTraceExplorer.Tests.SolutionHelperTests.<>c.<CreateSomeStackTraces>b__6_3()",
+            new[] { "StackTraceExplorer.", "Tests.", "SolutionHelperTests.", "<>c." },
+            "<CreateSomeStackTraces>b__6_3()")]
+        [DataRow("at Sample.ClassWithGenericTypeArgs`1..ctor(Boolean throwException)",
+            "Sample.ClassWithGenericTypeArgs`1..ctor(Boolean throwException)",
+            new[] { "Sample.", "ClassWithGenericTypeArgs`1.", },
+            ".ctor(Boolean throwException)")]
         public void ShouldMatch(string input, string expectedMatch, string[] expectedCaptures, string expectedMethod)
         {
             var match = MemberLinkElementGenerator.MemberRegex.Match(input);
@@ -55,6 +74,16 @@ namespace StackTraceExplorer.Tests
             }
 
             Assert.AreEqual(expectedMethod, match.Groups[2].Value, nameof(expectedMethod));
+        }
+
+        [DataTestMethod]
+        [DataRow("whatever[0]")]
+        [DataRow("Normal sentence (pretty much)")]
+        [DataRow("Normal sentence [pretty much]")]
+        public void ShouldNotMatch(string input)
+        {
+            var match = MemberLinkElementGenerator.MemberRegex.Match(input);
+            Assert.IsFalse(match.Success, $"Input {input} should not match.");
         }
     }
 }
