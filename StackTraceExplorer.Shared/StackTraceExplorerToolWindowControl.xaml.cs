@@ -90,9 +90,11 @@ namespace StackTraceExplorer
                 return;
             }
 
+            int selectionStart = textEditor.SelectionStart;
             textEditor.TextChanged -= TextEditor_TextChanged;
             ViewModel.SetStackTrace(trace);
             textEditor.TextChanged += TextEditor_TextChanged;
+            textEditor.SelectionStart = selectionStart;
 
             var workspace = TraceHelper.ComponentModel.GetService<VisualStudioWorkspace>();
             SolutionHelper.Solution = workspace.CurrentSolution;
