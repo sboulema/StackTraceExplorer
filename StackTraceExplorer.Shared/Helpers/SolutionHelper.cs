@@ -1,17 +1,17 @@
-﻿using Microsoft.CodeAnalysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 
 namespace StackTraceExplorer.Helpers
 {
     public static class SolutionHelper
     {
-        public static Solution Solution;
-        public static ImmutableArray<Compilation> Compilations;
+        public static Solution Solution { get; set; }
+        public static ImmutableArray<Compilation> Compilations { get; set; }
 
         public static async Task<ImmutableArray<Compilation>> GetCompilationsAsync(Solution solution)
         {
@@ -25,16 +25,18 @@ namespace StackTraceExplorer.Helpers
             _ = await Task.WhenAll(compilationTasks);
 
             Compilations = compilationTasks.Select(t => t.Result).ToImmutableArray();
-
             return Compilations;
         }
 
-        public static ISymbol Resolve(string methodName)
-            => Compilations.Select(c => Resolve(c, methodName)).FirstOrDefault(s => s != null);
-
-        private static ISymbol Resolve(Compilation compilation, string methodName)
+        public static ISymbol Resolve(string memberName)
         {
-            var parts = methodName.ToString().Replace(".ctor", "#ctor").Split('.');
+            ISymbol symbol = Compilations.Select(c => Resolve(c, memberName)).FirstOrDefault(s => s != null);
+            return symbol;
+        }
+
+        public static ISymbol Resolve(Compilation compilation, string methodName)
+        {
+            var parts = methodName.Replace(".ctor", "#ctor").Split('.');
 
             var currentContainer = (INamespaceOrTypeSymbol)compilation.Assembly.Modules.Single().GlobalNamespace;
 
@@ -43,7 +45,7 @@ namespace StackTraceExplorer.Helpers
                 ParseTypeName(parts[i], out var typeOrNamespaceName, out var typeArity);
                 currentContainer = currentContainer
                     .GetMembers(typeOrNamespaceName)
-                    .Where(n => typeArity == 0 || n is INamedTypeSymbol t && t.Arity == typeArity)
+                    .Where(n => typeArity == 0 || (n is INamedTypeSymbol t && t.Arity == typeArity))
                     .FirstOrDefault() as INamespaceOrTypeSymbol;
             }
 
@@ -60,25 +62,30 @@ namespace StackTraceExplorer.Helpers
                 return null;
             }
 
+            var lastPart = parts.Last();
             foreach (var member in members)
             {
-                if (member.Kind == SymbolKind.Method)
+                switch (member.Kind)
                 {
-                    var methodNameAndSignature = parts.Last();
-                    var methodArity = GetMethodArity(methodNameAndSignature);
-                    var parameterTypes = GetMethodParameterTypes(methodNameAndSignature);
+                    case SymbolKind.Method:
+                        var methodArity = GetMethodArity(lastPart);
+                        var parameterTypes = GetMethodParameterTypes(lastPart);
 
-                    var method = currentContainer
-                        .GetMembers(name)
-                        .OfType<IMethodSymbol>()
-                        .Where(m => m.Arity == methodArity)
-                        .FirstOrDefault(m => IsMatch(m, parameterTypes));
+                        var method = currentContainer
+                            .GetMembers(name)
+                            .OfType<IMethodSymbol>()
+                            .FirstOrDefault(m => m.Arity == methodArity && IsMatch(m, parameterTypes));
 
-                    return method;
-                }
-                else
-                {
-                    return member;
+                        return method;
+                    case SymbolKind.NamedType:
+                        ParseTypeName(lastPart, out _, out int typeArity);
+                        if (member is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.Arity == typeArity)
+                        {
+                            return member;
+                        }
+                        break;
+                    default:
+                        return member;
                 }
             }
 
@@ -102,10 +109,23 @@ namespace StackTraceExplorer.Helpers
             }
         }
 
-        private static string GetMemberName(string memberNameAndSignature)
+        public static string GetMemberName(string memberNameAndSignature)
         {
+            if (memberNameAndSignature.StartsWith("<"))
+            {
+                string name = memberNameAndSignature.Split(new[] { '<', '>' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                return name;
+            }
+
+            int backTick = memberNameAndSignature.IndexOf('`');
             var bracket = memberNameAndSignature.IndexOf('[');
             var parenthesis = memberNameAndSignature.IndexOf('(');
+
+            if (backTick != -1)
+            {
+                string typeName = memberNameAndSignature.Substring(0, backTick);
+                return typeName;
+            }
 
             if (parenthesis == -1)
             {
@@ -129,23 +149,24 @@ namespace StackTraceExplorer.Helpers
         private static int GetMethodArity(string methodNameAndSignature)
         {
             var parenthesis = methodNameAndSignature.IndexOf('(');
+            if (parenthesis < 0)
+            {
+                return 0;
+            }
 
             var openBracket = methodNameAndSignature.IndexOf('[', 0, parenthesis);
-
             if (openBracket < 0)
             {
                 return 0;
             }
 
             var closeBracket = methodNameAndSignature.IndexOf(']', 0, parenthesis);
-
             if (closeBracket < 0)
             {
                 return 0;
             }
 
             var result = 1;
-
             for (var i = openBracket; i <= closeBracket; i++)
             {
                 if (methodNameAndSignature[i] == ',')
@@ -160,6 +181,11 @@ namespace StackTraceExplorer.Helpers
         private static IReadOnlyList<string> GetMethodParameterTypes(string methodNameAndSignature)
         {
             var openParenthesis = methodNameAndSignature.IndexOf('(');
+            if (openParenthesis < 0)
+            {
+                return Array.Empty<string>();
+            }
+
             var closeParenthesis = methodNameAndSignature.IndexOf(')');
             var signatureStart = openParenthesis + 1;
             var signatureLength = closeParenthesis - signatureStart;

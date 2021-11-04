@@ -3,6 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using File = System.IO.File;
 using Path = System.IO.Path;
 
@@ -15,59 +18,85 @@ namespace StackTraceExplorer.Helpers
         /// </summary>
         /// <param name="input">File path</param>
         /// <returns>File found</returns>
-        public static bool HandleFileLinkClicked(string[] input)
+        public static void HandleFileLinkClicked(string[] input, StackTraceEditor stackTraceEditor)
         {
-            try
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                var path = Find(input[0]).Result;
-
-                if (!File.Exists(path))
+                var start = DateTime.UtcNow;
+                OutputWindowPane outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
+                try
                 {
-                    return true;
+                    var path = await Find(input[0], stackTraceEditor);
+
+                    if (!File.Exists(path))
+                    {
+                        string message = $"FileLinkClicked: {input[0]}: Unable to resolve file.";
+                        await VS.StatusBar.ShowMessageAsync(message);
+                        await outputWindow.WriteLineAsync(message);
+                        return;
+                    }
+
+                    var documentView = await VS.Documents.OpenAsync(path);
+
+                    ITextSnapshotLine line = documentView.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(int.Parse(input[1]) - 1);
+                    documentView?.TextView?.ViewScroller.EnsureSpanVisible(line.Extent);
+                    var selectionBroker = documentView.TextView?.GetMultiSelectionBroker();
+                    if (selectionBroker != null)
+                    {
+                        selectionBroker.SetSelection(new Microsoft.VisualStudio.Text.Selection(line.Extent));
+                    }
+
+                    await outputWindow.WriteLineAsync($"FileLinkClicked: {input[0]} finished in {DateTime.UtcNow.Subtract(start)}");
                 }
-
-                var documentView = VS.Documents.OpenAsync(path).Result;
-
-                var line = documentView.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(int.Parse(input[1]));
-                documentView?.TextView?.ViewScroller.EnsureSpanVisible(line.Extent);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+                catch (Exception e)
+                {
+                    await outputWindow.WriteLineAsync($"FileLinkClicked: {input[0]} error:\r\n{e}");
+                }
+            });
         }
 
         /// <summary>
         /// Handle click event on a member in a stacktrace
         /// </summary>
         /// <param name="input">Function name</param>
-        /// <returns>Function found</returns>
-        public static bool HandleMemberLinkClicked(string[] input)
+        public static void HandleMemberLinkClicked(string[] input, StackTraceEditor stackTraceEditor)
         {
-            try
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                var member = SolutionHelper.Resolve(GetInput(input));
-
-                if (member == null)
+                var start = DateTime.UtcNow;
+                string typeOrMemberName = GetTypeOrMemberName(input);
+                OutputWindowPane outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
+                try
                 {
-                    return false;
+                    var member = SolutionHelper.Resolve(typeOrMemberName);
+
+                    if (member == null)
+                    {
+                        string message = $"MemberLinkClicked: {typeOrMemberName}: unable to resolve member.";
+                        await VS.StatusBar.ShowMessageAsync(message);
+                        await outputWindow.WriteLineAsync(message);
+                        return;
+                    }
+
+                    var location = member.Locations.FirstOrDefault();
+
+                    var documentView = await VS.Documents.OpenAsync(location.SourceTree.FilePath);
+                    var line = documentView.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(location.GetLineSpan().StartLinePosition.Line);
+                    documentView?.TextView?.ViewScroller.EnsureSpanVisible(line.Extent);
+                    var selectionBroker = documentView.TextView?.GetMultiSelectionBroker();
+                    if (selectionBroker != null)
+                    {
+                        var snapshotSpan = new SnapshotSpan(documentView.TextView.TextSnapshot, location.SourceSpan.Start, location.SourceSpan.Length);
+                        selectionBroker.SetSelection(new Microsoft.VisualStudio.Text.Selection(snapshotSpan));
+                    }
+
+                    await outputWindow.WriteLineAsync($"MemberLinkClicked: {typeOrMemberName} finished in {DateTime.UtcNow.Subtract(start)}");
                 }
-
-                var location = member.Locations.FirstOrDefault();
-
-                var documentView = VS.Documents.OpenAsync(location.SourceTree.FilePath).Result;
-
-                var line = documentView.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(location.GetLineSpan().StartLinePosition.Line + 1);
-                documentView?.TextView?.ViewScroller.EnsureSpanVisible(line.Extent);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+                catch (Exception e)
+                {
+                    await outputWindow.WriteLineAsync($"MemberLinkClicked: {typeOrMemberName} error:\r\n{e}");
+                }
+            });
         }
 
         /// <summary>
@@ -76,49 +105,65 @@ namespace StackTraceExplorer.Helpers
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static async Task<string> Find(string path)
+        public static async Task<string> Find(string path, StackTraceEditor stackTraceEditor)
         {
-            if (string.IsNullOrEmpty(path))
+            var outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
+            DateTime start = DateTime.UtcNow;
+            try
             {
-                return string.Empty;
-            }
+                if (string.IsNullOrEmpty(path))
+                {
+                    await outputWindow.WriteLineAsync($"FindFile: '{path}' is null or empty");
+                    return string.Empty;
+                }
 
-            if (File.Exists(path))
-            {
-                return path;
-            }
+                if (File.Exists(path))
+                {
+                    await outputWindow.WriteLineAsync($"FindFile: '{path}' File Exists");
+                    return path;
+                }
 
-            var pathParts = path.Split(new char[] { Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar },
-                StringSplitOptions.RemoveEmptyEntries);
+                string fileNameOnly = Path.GetFileName(path);
 
-            var solution = await VS.Solutions.GetCurrentSolutionAsync();
+                var solution = await VS.Solutions.GetCurrentSolutionAsync();
+                if (solution == null)
+                {
+                    return string.Empty;
+                }
 
-            if (solution == null)
-            {
-                return string.Empty;
-            }
-
-            var solutionDir = new DirectoryInfo(Path.GetDirectoryName(solution.FullPath));
-
-            for (var i = 0; i < pathParts.Length; i++)
-            {
-                var partialPath = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts.Skip(i));
-
+                var solutionDir = new DirectoryInfo(Path.GetDirectoryName(solution.FullPath));
                 try
                 {
-                    var file = solutionDir.GetFiles($"{partialPath}*", SearchOption.AllDirectories).FirstOrDefault();
+                    await outputWindow.WriteLineAsync($"FindFile: '{path}' looking for '{fileNameOnly}' in '{solutionDir.FullName}'");
+                    FileInfo[] fileInfos = solutionDir.GetFiles($"{fileNameOnly}", SearchOption.AllDirectories);
+                    string[] files = fileInfos.Select(fi => fi.FullName).ToArray();
+                    await outputWindow.WriteLineAsync($"FindFile: '{path}' found {files.Length} potential matches");
+                    if (files.Length == 0)
+                    {
+                        return string.Empty;
+                    }
+
+                    string file = StringHelper.FindLongestMatchingSuffix(path, files, StringComparison.OrdinalIgnoreCase);
 
                     if (file != null)
                     {
-                        return file.FullName;
+                        await outputWindow.WriteLineAsync($"FindFile: '{path}' returning file: '{file}'");
+                        return file;
                     }
                 }
-                catch
+                catch (Exception e)
                 {
+                    await outputWindow.WriteLineAsync($"FindFile: '{path}' error:\r\n{e}");
                 }
-            }
 
-            return path;
+                await outputWindow.WriteLineAsync($"FindFile: '{path}' returning original path! Is this bad?'");
+                return path;
+            }
+            finally
+            {
+                var elapsed = DateTime.UtcNow - start;
+                await outputWindow.WriteLineAsync($"FindFile: '{path}' completed in {elapsed}");
+            }
         }
 
         /// <summary>
@@ -126,7 +171,7 @@ namespace StackTraceExplorer.Helpers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string GetInput(string[] input)
+        public static string GetTypeOrMemberName(string[] input)
         {
             var needle = input[1].TrimEnd('.');
             var index = input[0].IndexOf(needle);

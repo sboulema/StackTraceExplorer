@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Generators\MemberLinkElementGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ClickHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SolutionHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\TraceHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StackTracesViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StackTraceEditor.cs" />

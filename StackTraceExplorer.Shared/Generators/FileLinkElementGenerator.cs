@@ -14,10 +14,10 @@ namespace StackTraceExplorer.Generators
         // To use this class:
         // textEditor.TextArea.TextView.ElementGenerators.Add(new FileLinkElementGenerator());
 
-        private readonly TextEditor _textEditor;
-        private static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile)? (\d+)", RegexOptions.IgnoreCase);
+        private readonly StackTraceEditor _textEditor;
+        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile)? (\d+)", RegexOptions.IgnoreCase);
 
-        public FileLinkElementGenerator(TextEditor textEditor)
+        public FileLinkElementGenerator(StackTraceEditor textEditor)
         {
             _textEditor = textEditor;
         }
@@ -52,17 +52,10 @@ namespace StackTraceExplorer.Generators
                 return null;
             }
 
-            var localFilePath = ClickHelper.Find(match.Groups[1].Value).Result;
-
-            if (!File.Exists(localFilePath))
-            {
-                return null;
-            }
-
             var line = new CustomLinkVisualLineText(
-                new [] { match.Groups[1].Value, match.Groups[2].Value }, 
-                CurrentContext.VisualLine, 
-                match.Groups[0].Length, 
+                new[] { match.Groups[1].Value, match.Groups[2].Value },
+                CurrentContext.VisualLine,
+                match.Groups[0].Length,
                 ToBrush(EnvironmentColors.ControlLinkTextColorKey),
                 ClickHelper.HandleFileLinkClicked,
                 false,

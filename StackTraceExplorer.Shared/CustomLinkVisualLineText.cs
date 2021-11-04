@@ -4,9 +4,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
-using ICSharpCode.AvalonEdit.Rendering;
+using Community.VisualStudio.Toolkit;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Rendering;
 using StackTraceExplorer.Helpers;
 
 namespace StackTraceExplorer
@@ -22,11 +22,13 @@ namespace StackTraceExplorer
 
         public Brush ForegroundBrush { get; set; }
 
-        public Func<string[], bool> ClickFunction { get; set; }
+        public Action<string[], StackTraceEditor> ClickFunction { get; set; }
 
         public TextDocument TextDocument { get; set; }
 
-        public TextEditor TextEditor { get; set; }
+        public StackTraceEditor TextEditor { get; set; }
+
+        OutputWindowPane OutputWindowPane { get; }
 
         /// <summary>
         /// Creates a visual line text element with the specified length.
@@ -34,8 +36,8 @@ namespace StackTraceExplorer
         /// <see cref="VisualLineElement.RelativeTextOffset"/> to find the actual text string.
         /// </summary>
         public CustomLinkVisualLineText(string[] theLink, VisualLine parentVisualLine, int length, 
-            Brush foregroundBrush, Func<string[], bool> clickFunction, bool requireControlModifierForClick,
-            TextDocument textDocument, TextEditor textEditor)
+            Brush foregroundBrush, Action<string[], StackTraceEditor> clickFunction, bool requireControlModifierForClick,
+            TextDocument textDocument, StackTraceEditor textEditor)
             : base(parentVisualLine, length)
         {
             RequireControlModifierForClick = requireControlModifierForClick;
@@ -97,7 +99,7 @@ namespace StackTraceExplorer
             {
                 e.Handled = true;
 
-                _ = ClickFunction(Link);
+                ClickFunction(Link, this.TextEditor);
                 TraceHelper.ViewModel.AddClickedLine(this);
 
                 (e.Source as TextView).Redraw();
