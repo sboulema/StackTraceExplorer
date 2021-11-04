@@ -48,3 +48,4 @@ There are multiple ways open opening new tabs to show your stack traces:
 ## Thanks
 - [Resharper](https://www.jetbrains.com/resharper/) (for the initial idea to recreate this)
 - [Terrajobst](https://github.com/terrajobst/stack-trace-explorer) (for some inspiration on optimizing the extension)
+- [dlstucki](https://github.com/dlstucki) (for a large PR optimizing StackTraceExplorer for large solutions)
