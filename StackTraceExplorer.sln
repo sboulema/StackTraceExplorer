@@ -6,10 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE2CB841-FBAB-42FF-8233-E762CC77D778}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		azure-pipelines.yml = azure-pipelines.yml
 		publish-manifest.VS2019.json = publish-manifest.VS2019.json
 		publish-manifest.VS2022.json = publish-manifest.VS2022.json
 		README.md = README.md
+		.github\workflows\workflow.yml = .github\workflows\workflow.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackTraceExplorer.VS2019", "StackTraceExplorer.VS2019\StackTraceExplorer.VS2019.csproj", "{393FF8FD-00C8-471C-8C5A-EA97B229886A}"

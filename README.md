@@ -1,6 +1,7 @@
 # Stack Trace Explorer
 Parse those pesty unreadable long stack traces. Stack Trace Explorer provides syntax highlighting and easy navigation to elements in the stack trace.
 
+[![StackTraceExplorer](https://github.com/sboulema/StackTraceExplorer/actions/workflows/workflow.yml/badge.svg)](https://github.com/sboulema/StackTraceExplorer/actions/workflows/workflow.yml)
 [![Sponsor](https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors)](https://github.com/sponsors/sboulema)
 
 ## Installing
