@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using File = System.IO.File;
 using Path = System.IO.Path;
+using Task = System.Threading.Tasks.Task;
 
 namespace StackTraceExplorer.Helpers
 {
@@ -22,17 +24,15 @@ namespace StackTraceExplorer.Helpers
         {
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                var start = DateTime.UtcNow;
+                var stopwatch = Stopwatch.StartNew();
                 OutputWindowPane outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
                 try
                 {
-                    var path = await Find(input[0], stackTraceEditor);
+                    var path = await Find(input[0], outputWindow, stopwatch);
 
                     if (!File.Exists(path))
                     {
-                        string message = $"FileLinkClicked: {input[0]}: Unable to resolve file.";
-                        await VS.StatusBar.ShowMessageAsync(message);
-                        await outputWindow.WriteLineAsync(message);
+                        await WriteOutputAsync(outputWindow, $"FileLinkClicked: {input[0]}: Unable to resolve file ({stopwatch.Elapsed})", true);
                         return;
                     }
 
@@ -46,11 +46,11 @@ namespace StackTraceExplorer.Helpers
                         selectionBroker.SetSelection(new Microsoft.VisualStudio.Text.Selection(line.Extent));
                     }
 
-                    await outputWindow.WriteLineAsync($"FileLinkClicked: {input[0]} finished in {DateTime.UtcNow.Subtract(start)}");
+                    await WriteOutputAsync(outputWindow, $"FileLinkClicked: {input[0]} finished ({stopwatch.Elapsed})", true);
                 }
                 catch (Exception e)
                 {
-                    await outputWindow.WriteLineAsync($"FileLinkClicked: {input[0]} error:\r\n{e}");
+                    await WriteOutputAsync(outputWindow, $"FileLinkClicked: {input[0]} error ({stopwatch.Elapsed}):\r\n{e}", true);
                 }
             });
         }
@@ -63,18 +63,15 @@ namespace StackTraceExplorer.Helpers
         {
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                var start = DateTime.UtcNow;
+                var stopwatch = Stopwatch.StartNew();
                 string typeOrMemberName = GetTypeOrMemberName(input);
                 OutputWindowPane outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
                 try
                 {
                     var member = SolutionHelper.Resolve(typeOrMemberName);
-
                     if (member == null)
                     {
-                        string message = $"MemberLinkClicked: {typeOrMemberName}: unable to resolve member.";
-                        await VS.StatusBar.ShowMessageAsync(message);
-                        await outputWindow.WriteLineAsync(message);
+                        await WriteOutputAsync(outputWindow, $"MemberLinkClicked: {typeOrMemberName}: unable to resolve member ({stopwatch.Elapsed})", true);
                         return;
                     }
 
@@ -90,13 +87,22 @@ namespace StackTraceExplorer.Helpers
                         selectionBroker.SetSelection(new Microsoft.VisualStudio.Text.Selection(snapshotSpan));
                     }
 
-                    await outputWindow.WriteLineAsync($"MemberLinkClicked: {typeOrMemberName} finished in {DateTime.UtcNow.Subtract(start)}");
+                    await WriteOutputAsync(outputWindow, $"MemberLinkClicked: {typeOrMemberName} finished ({stopwatch.Elapsed})", true);
                 }
                 catch (Exception e)
                 {
-                    await outputWindow.WriteLineAsync($"MemberLinkClicked: {typeOrMemberName} error:\r\n{e}");
+                    await WriteOutputAsync(outputWindow, $"MemberLinkClicked: {typeOrMemberName} error:\r\n{e}", true);
                 }
             });
+        }
+
+        static async Task WriteOutputAsync(OutputWindowPane outputWindow, string message, bool showInStatusBar = false)
+        {
+            await outputWindow.WriteLineAsync(message);
+            if (showInStatusBar)
+            {
+                await VS.StatusBar.ShowMessageAsync(message);
+            }
         }
 
         /// <summary>
@@ -105,65 +111,55 @@ namespace StackTraceExplorer.Helpers
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static async Task<string> Find(string path, StackTraceEditor stackTraceEditor)
+        public static async Task<string> Find(string path, OutputWindowPane outputWindow, Stopwatch stopwatch)
         {
-            var outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
-            DateTime start = DateTime.UtcNow;
-            try
+            if (string.IsNullOrEmpty(path))
             {
-                if (string.IsNullOrEmpty(path))
-                {
-                    await outputWindow.WriteLineAsync($"FindFile: '{path}' is null or empty");
-                    return string.Empty;
-                }
+                return string.Empty;
+            }
 
-                if (File.Exists(path))
-                {
-                    await outputWindow.WriteLineAsync($"FindFile: '{path}' File Exists");
-                    return path;
-                }
-
-                string fileNameOnly = Path.GetFileName(path);
-
-                var solution = await VS.Solutions.GetCurrentSolutionAsync();
-                if (solution == null)
-                {
-                    return string.Empty;
-                }
-
-                var solutionDir = new DirectoryInfo(Path.GetDirectoryName(solution.FullPath));
-                try
-                {
-                    await outputWindow.WriteLineAsync($"FindFile: '{path}' looking for '{fileNameOnly}' in '{solutionDir.FullName}'");
-                    FileInfo[] fileInfos = solutionDir.GetFiles($"{fileNameOnly}", SearchOption.AllDirectories);
-                    string[] files = fileInfos.Select(fi => fi.FullName).ToArray();
-                    await outputWindow.WriteLineAsync($"FindFile: '{path}' found {files.Length} potential matches");
-                    if (files.Length == 0)
-                    {
-                        return string.Empty;
-                    }
-
-                    string file = StringHelper.FindLongestMatchingSuffix(path, files, StringComparison.OrdinalIgnoreCase);
-
-                    if (file != null)
-                    {
-                        await outputWindow.WriteLineAsync($"FindFile: '{path}' returning file: '{file}'");
-                        return file;
-                    }
-                }
-                catch (Exception e)
-                {
-                    await outputWindow.WriteLineAsync($"FindFile: '{path}' error:\r\n{e}");
-                }
-
-                await outputWindow.WriteLineAsync($"FindFile: '{path}' returning original path! Is this bad?'");
+            if (File.Exists(path))
+            {
+                await WriteOutputAsync(outputWindow, $"FindFile: '{path}': full path exists ({stopwatch.Elapsed})");
                 return path;
             }
-            finally
+
+            string fileNameOnly = Path.GetFileName(path);
+
+            var solution = await VS.Solutions.GetCurrentSolutionAsync();
+            if (solution == null)
             {
-                var elapsed = DateTime.UtcNow - start;
-                await outputWindow.WriteLineAsync($"FindFile: '{path}' completed in {elapsed}");
+                await WriteOutputAsync(outputWindow, $"FindFile: '{path}': No solution ({stopwatch.Elapsed})");
+                return string.Empty;
             }
+
+            var solutionDir = new DirectoryInfo(Path.GetDirectoryName(solution.FullPath)).Parent;
+            try
+            {
+                await outputWindow.WriteLineAsync($"FindFile: '{path}' looking for '{fileNameOnly}' in '{solutionDir.FullName}'");
+                FileInfo[] fileInfos = solutionDir.GetFiles($"{fileNameOnly}", SearchOption.AllDirectories);
+                string[] files = fileInfos.Select(fi => fi.FullName).ToArray();
+                await outputWindow.WriteLineAsync($"FindFile: '{path}' found {files.Length} potential matches ({stopwatch.Elapsed})");
+                if (files.Length == 0)
+                {
+                    return string.Empty;
+                }
+
+                string file = StringHelper.FindLongestMatchingSuffix(path, files, StringComparison.OrdinalIgnoreCase);
+
+                if (file != null)
+                {
+                    await outputWindow.WriteLineAsync($"FindFile: Returning file: '{file}' ({stopwatch.Elapsed})");
+                    return file;
+                }
+            }
+            catch (Exception e)
+            {
+                await outputWindow.WriteLineAsync($"FindFile: '{path}' ({stopwatch.Elapsed}) error:\r\n{e}");
+            }
+
+            await outputWindow.WriteLineAsync($"FindFile: '{path}' returning original path! Is this bad? ({stopwatch.Elapsed})'");
+            return path;
         }
 
         /// <summary>

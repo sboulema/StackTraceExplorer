@@ -59,6 +59,10 @@ namespace StackTraceExplorer.Tests
             "Sample.ClassWithGenericTypeArgs`1..ctor(Boolean throwException)",
             new[] { "Sample.", "ClassWithGenericTypeArgs`1.", },
             ".ctor(Boolean throwException)")]
+        [DataRow(@"StackTraceExplorer.Tests.SolutionHelperTests.ClassWithGenericTypeArgs`1.StaticMethod[C]() in D:\StackTraceExplorer.Tests\SolutionHelperTests.cs:line 114",
+            "StackTraceExplorer.Tests.SolutionHelperTests.ClassWithGenericTypeArgs`1.StaticMethod[C]()",
+            new[] { "StackTraceExplorer.", "Tests.", "SolutionHelperTests.", "ClassWithGenericTypeArgs`1." },
+            "StaticMethod[C]()")]
         public void ShouldMatch(string input, string expectedMatch, string[] expectedCaptures, string expectedMethod)
         {
             var match = MemberLinkElementGenerator.MemberRegex.Match(input);
