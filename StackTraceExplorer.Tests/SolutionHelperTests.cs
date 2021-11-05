@@ -32,32 +32,44 @@
         }
 
         [DataTestMethod]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests")]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests..ctor()")]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ResolveMember(String memberName)")]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ThisMethodThrows[T](String s)")]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ThisMethodThrows[T,V](String s)")]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ClassWithGenericTypeArgs`2")]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ClassWithGenericTypeArgs`1..ctor(Boolean throwException)")]
-        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ClassWithGenericTypeArgs`1.StaticMethod[C]()")]
-        // This Doesn't work
-        // [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.<>c.<CreateSomeStackTraces>b__6_3()")]
-        public void ResolveMember(string memberName)
+        [DataRow("StackTraceExplorer.Tests." + nameof(SolutionHelperTests), "StackTraceExplorer.Tests.SolutionHelperTests")]
+        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests..ctor()", "StackTraceExplorer.Tests.SolutionHelperTests.SolutionHelperTests()")]
+        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ResolveMember(String memberName, String expectedMatch)", "StackTraceExplorer.Tests.SolutionHelperTests.ResolveMember(string, string)")]
+        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ThisMethodThrows[T](String s)", "StackTraceExplorer.Tests.SolutionHelperTests.ThisMethodThrows<T>(string)")]
+        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.ThisMethodThrows[T,V](String s)", "StackTraceExplorer.Tests.SolutionHelperTests.ThisMethodThrows<T, V>(string)")]
+        [DataRow("StackTraceExplorer.Tests.ClassWithGenericTypeArgs`1", "StackTraceExplorer.Tests.ClassWithGenericTypeArgs<A>")]
+        [DataRow("StackTraceExplorer.Tests." + nameof(ClassWithGenericTypeArgs<int, int>) + "`2", "StackTraceExplorer.Tests.ClassWithGenericTypeArgs<A, B>")]
+        [DataRow("StackTraceExplorer.Tests.ClassWithGenericTypeArgs`1..ctor(Boolean throwException)", "StackTraceExplorer.Tests.ClassWithGenericTypeArgs<A>.ClassWithGenericTypeArgs(bool)")]
+        [DataRow("StackTraceExplorer.Tests.ClassWithGenericTypeArgs`1.StaticMethod[C]()", "StackTraceExplorer.Tests.ClassWithGenericTypeArgs<A>.StaticMethod<C>()")]
+        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.<>c.<" + nameof(GenerateStackTracesForTesting) + ">b__6_3()", "StackTraceExplorer.Tests.SolutionHelperTests.GenerateStackTracesForTesting()")]
+        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.<>c__DisplayClass6_0.<" + nameof(GenerateStackTracesForTesting) + ">b__7(String s)", "StackTraceExplorer.Tests.SolutionHelperTests.GenerateStackTracesForTesting()")]
+        [DataRow("StackTraceExplorer.Tests.SolutionHelperTests.GetExceptionToString[T](Action`1 action, T value)", "StackTraceExplorer.Tests.SolutionHelperTests.GetExceptionToString<T>(Action<T>, T)")]
+        public void ResolveMember(string memberName, string expectedMatch)
         {
             ISymbol symbol = SolutionHelper.Resolve(this.Compilation, memberName);
             Assert.IsNotNull(symbol, $"Symbol {memberName} should be found");
+            Trace.WriteLine($"Found: {symbol}");
+            Assert.AreEqual(expectedMatch, symbol.ToString(), "Resolved member was not correct");
         }
 
         [TestMethod]
-        public void CreateSomeStackTraces()
+        public void GenerateStackTracesForTesting()
         {
+            // This isn't a test, per se, but it is useful for creating sample text to try pasting into the StackTrace window.
             Trace.WriteLine(GetExceptionToString(() => ClassWithGenericTypeArgs<string>.StaticMethod<int>()));
             Trace.WriteLine(GetExceptionToString(() => new ClassWithGenericTypeArgs<string>(throwException: true)));
             Trace.WriteLine(GetExceptionToString(() => new ClassWithGenericTypeArgs<string>(throwException: false).InstanceMethod<byte>()));
 
             Trace.WriteLine(GetExceptionToString(() => ClassWithGenericTypeArgs<string, object>.StaticMethod<int>()));
             Trace.WriteLine(GetExceptionToString(() => new ClassWithGenericTypeArgs<string, string>(throwException: true)));
-            Trace.WriteLine(GetExceptionToString(() => new ClassWithGenericTypeArgs<string, int>(throwException: false).InstanceMethod<int>()));
+            Trace.WriteLine(GetExceptionToString((s) => new ClassWithGenericTypeArgs<string, int>(throwException: false).InstanceMethod<int>(), "someString"));
+
+            // Create some funny compiler generated names
+            Trace.WriteLine(GetExceptionToString(() => throw new InvalidOperationException(this.ToString())));
+            foreach (string value in new[] { "Test String" })
+            {
+                Trace.WriteLine(GetExceptionToString((s) => throw new InvalidOperationException(value), value));
+            }
         }
 
         public static CSharpCompilation CreateCompilationForCurrentFile([CallerFilePath] string fileName = "")
@@ -83,6 +95,20 @@
             return string.Empty;
         }
 
+        public static string GetExceptionToString<T>(Action<T> action, T value)
+        {
+            try
+            {
+                action(value);
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+            return string.Empty;
+        }
+
         // Used in Test DataRows
         static void ThisMethodThrows<T>(string s)
         {
@@ -94,47 +120,47 @@
         {
             throw new NotImplementedException("foo");
         }
+    }
 
-        class ClassWithGenericTypeArgs<A>
+    class ClassWithGenericTypeArgs<A>
+    {
+        public ClassWithGenericTypeArgs(bool throwException)
         {
-            public ClassWithGenericTypeArgs(bool throwException)
-            {
-                if (throwException)
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public string InstanceMethod<B>()
-            {
-                throw new NotImplementedException();
-            }
-
-            public static string StaticMethod<C>()
+            if (throwException)
             {
                 throw new NotImplementedException();
             }
         }
 
-        class ClassWithGenericTypeArgs<A,B>
+        public string InstanceMethod<B>()
         {
-            public ClassWithGenericTypeArgs(bool throwException)
-            {
-                if (throwException)
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            throw new NotImplementedException();
+        }
 
-            public string InstanceMethod<C>()
+        public static string StaticMethod<C>()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class ClassWithGenericTypeArgs<A,B>
+    {
+        public ClassWithGenericTypeArgs(bool throwException)
+        {
+            if (throwException)
             {
                 throw new NotImplementedException();
             }
+        }
 
-            public static string StaticMethod<D>()
-            {
-                throw new NotImplementedException();
-            }
+        public string InstanceMethod<C>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static string StaticMethod<D>()
+        {
+            throw new NotImplementedException();
         }
     }
 }
