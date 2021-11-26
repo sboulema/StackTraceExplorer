@@ -55,12 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Resources\StackTraceExplorer.cs">
-      <Link>StackTraceExplorer.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StackTraceExplorer.vsct</DependentUpon>
-    </Compile>
     <Compile Include="FileRegexTests.cs" />
     <Compile Include="MemberRegexTests.cs" />
     <Compile Include="SolutionHelperTests.cs" />
@@ -76,31 +70,21 @@
     <PackageReference Include="AvalonEdit">
       <Version>6.1.2.30</Version>
     </PackageReference>
-    <PackageReference Include="Caliburn.Micro">
-      <Version>4.0.173</Version>
-    </PackageReference>
     <PackageReference Include="Community.VisualStudio.Toolkit">
       <Version>17.0.76.257-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis">
-      <Version>3.11.0</Version>
+      <Version>4.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices">
-      <Version>2.10.0</Version>
+      <Version>4.0.1</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestAdapter">
-      <Version>2.2.7</Version>
+      <Version>2.2.8</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework">
-      <Version>2.2.7</Version>
+      <Version>2.2.8</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\Resources\StackTraceExplorer.vsct">
-      <Link>StackTraceExplorer.vsct</Link>
-      <Generator>VsctGenerator</Generator>
-      <LastGenOutput>StackTraceExplorer.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <Import Project="..\StackTraceExplorer.Shared\StackTraceExplorer.Shared.projitems" Label="Shared" />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

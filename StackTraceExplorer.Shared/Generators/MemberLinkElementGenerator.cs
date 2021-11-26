@@ -3,7 +3,6 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
-using ICSharpCode.AvalonEdit;
 using StackTraceExplorer.Helpers;
 using System.Linq;
 

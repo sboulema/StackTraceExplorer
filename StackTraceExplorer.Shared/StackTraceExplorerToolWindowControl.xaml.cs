@@ -73,11 +73,14 @@ namespace StackTraceExplorer
         }
 
         #region Events
-        private void ButtonPaste_OnClick(object sender, RoutedEventArgs e) => ViewModel.SetStackTrace(Clipboard.GetText());
+        private void ButtonPaste_OnClick(object sender, RoutedEventArgs e)
+            => ViewModel.SetStackTrace(Clipboard.GetText());
 
-        private void ButtonPasteAsNew_OnClick(object sender, RoutedEventArgs e) => AddStackTrace(Clipboard.GetText());
+        private void ButtonPasteAsNew_OnClick(object sender, RoutedEventArgs e)
+            => AddStackTrace(Clipboard.GetText());
 
-        private void ButtonOpenFile_OnClick(object sender, RoutedEventArgs e) => AddStackTraceFromFile();
+        private void ButtonOpenFile_OnClick(object sender, RoutedEventArgs e)
+            => AddStackTraceFromFile();
 
         // In use through XAML binding
         private async void TextEditor_TextChanged(object sender, System.EventArgs e)

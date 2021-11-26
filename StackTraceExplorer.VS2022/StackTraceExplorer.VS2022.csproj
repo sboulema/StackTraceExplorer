@@ -101,9 +101,6 @@
     <PackageReference Include="AvalonEdit">
       <Version>6.1.2.30</Version>
     </PackageReference>
-    <PackageReference Include="Caliburn.Micro">
-      <Version>4.0.173</Version>
-    </PackageReference>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
       <Version>17.0.343</Version>
     </PackageReference>

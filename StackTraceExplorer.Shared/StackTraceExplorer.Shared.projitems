@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SolutionHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\TraceHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\StackTrace.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StackTracesViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StackTraceEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StackTraceExplorerToolWindow.cs" />

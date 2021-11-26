@@ -1,25 +1,17 @@
-﻿using Caliburn.Micro;
-using ICSharpCode.AvalonEdit.Document;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.VisualStudio.PlatformUI;
+using StackTraceExplorer.Shared.Models;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace StackTraceExplorer.Models
 {
-    public class StackTracesViewModel : PropertyChangedBase
+    public class StackTracesViewModel : ObservableObject
     {
-        private ObservableCollection<Stacktrace> _stackTraces = new ObservableCollection<Stacktrace>();
+        private ObservableCollection<StackTrace> _stackTraces = new ObservableCollection<StackTrace>();
 
-        public ObservableCollection<Stacktrace> StackTraces
+        public ObservableCollection<StackTrace> StackTraces
         {
             get => _stackTraces;
-            set
-            {
-                _stackTraces = value;
-                NotifyOfPropertyChange();
-            }
+            set => SetProperty(ref _stackTraces, value);
         }
 
         private int _selectedStackTraceIndex;
@@ -27,17 +19,13 @@ namespace StackTraceExplorer.Models
         public int SelectedStackTraceIndex
         {
             get => _selectedStackTraceIndex;
-            set
-            {
-                _selectedStackTraceIndex = value;
-                NotifyOfPropertyChange();
-            }
+            set => SetProperty(ref _selectedStackTraceIndex, value);
         }
 
         public void AddStackTrace(string trace)
         {
-            _stackTraces.Add(new Stacktrace(trace));
-            NotifyOfPropertyChange("StackTraces");
+            _stackTraces.Add(new StackTrace(trace));
+            NotifyPropertyChanged("StackTraces");
         }
 
         public void SetStackTrace(string trace)
@@ -48,60 +36,5 @@ namespace StackTraceExplorer.Models
 
         public bool IsClickedLine(CustomLinkVisualLineText line)
             => _stackTraces[_selectedStackTraceIndex].IsClickedLine(line);
-    }
-
-    public class Stacktrace : PropertyChangedBase
-    {
-        public TextDocument Document { get; set; }
-
-        public List<CustomLinkVisualLineText> ClickedLines { get; set; } = new List<CustomLinkVisualLineText>();
-
-        public Stacktrace(string trace = null)
-        {
-            SetStackTrace(trace);
-        }
-
-        private bool _wordWrap;
-
-        public bool WordWrap
-        {
-            get => _wordWrap;
-            set
-            {
-                _wordWrap = value;
-                NotifyOfPropertyChange();
-            }
-        }
-
-        public void SetStackTrace(string trace)
-        {
-            Document = new TextDocument { Text = WrapStackTrace(trace) };
-            NotifyOfPropertyChange("Document");
-        }
-
-        public void AddClickedLine(CustomLinkVisualLineText line)
-            => ClickedLines.Add(line);
-
-        public bool IsClickedLine(CustomLinkVisualLineText line)
-            => ClickedLines.Any(l => l.Link.SequenceEqual(line.Link));
-
-        private string WrapStackTrace(string trace)
-        {
-            if (string.IsNullOrEmpty(trace))
-            {
-                return string.Empty;
-            }
-
-            if (!trace.Contains(Environment.NewLine))
-            {
-                var lines = Regex
-                    .Split(trace, @"(?=\s+at\s+)")
-                    .Where(line => !string.IsNullOrEmpty(line) &&
-                                   !string.IsNullOrWhiteSpace(line));
-                return string.Join(Environment.NewLine, lines);
-            }
-
-            return trace;
-        }
     }
 }

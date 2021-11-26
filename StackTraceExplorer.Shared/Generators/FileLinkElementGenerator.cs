@@ -3,8 +3,6 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
-using ICSharpCode.AvalonEdit;
-using System.IO;
 using StackTraceExplorer.Helpers;
 
 namespace StackTraceExplorer.Generators
@@ -15,7 +13,7 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new FileLinkElementGenerator());
 
         private readonly StackTraceEditor _textEditor;
-        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile)?\s?(\d+)", RegexOptions.IgnoreCase);
+        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile|строка)?\s?(\d+)", RegexOptions.IgnoreCase);
 
         public FileLinkElementGenerator(StackTraceEditor textEditor)
         {
