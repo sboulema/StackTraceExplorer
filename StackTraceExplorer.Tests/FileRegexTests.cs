@@ -29,6 +29,11 @@ namespace StackTraceExplorer.Tests
             @"E:\Repos\Underscore_File.cs:line 375",
             @"E:\Repos\Underscore_File.cs",
             "375")]
+        [DataRow(
+            @"at CodeNav.Helpers.HistoryHelper.AddItemToHistory(CodeNav.VS2019, Version= 8.8.28.0, Culture= neutral, PublicKeyToken= null: D:\a\CodeNav\CodeNav\CodeNav.Shared\Helpers\HistoryHelper.cs:21)",
+            @"D:\a\CodeNav\CodeNav\CodeNav.Shared\Helpers\HistoryHelper.cs:21",
+            @"D:\a\CodeNav\CodeNav\CodeNav.Shared\Helpers\HistoryHelper.cs",
+            "21")]
         public void ShouldMatch(string input, string expectedMatch, string expectedFile, string expectedLine)
         {
             var match = FileLinkElementGenerator.FilePathRegex.Match(input);

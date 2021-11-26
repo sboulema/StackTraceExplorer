@@ -63,7 +63,7 @@ namespace StackTraceExplorer.Generators
                 new [] { _fullMatchText, captures.First() }, 
                 CurrentContext.VisualLine,
                 captures.First().TrimEnd('.').Length,
-                ToBrush(EnvironmentColors.StartPageTextControlLinkSelectedColorKey), 
+                ToBrush(EnvironmentColors.ControlLinkTextBrushKey), 
                 ClickHelper.HandleMemberLinkClicked, 
                 false,
                 CurrentContext.Document,
@@ -79,7 +79,7 @@ namespace StackTraceExplorer.Generators
 
             if (TraceHelper.ViewModel.IsClickedLine(lineElement))
             {
-                lineElement.ForegroundBrush = ToBrush(EnvironmentColors.StatusBarNoSolutionColorKey);
+                lineElement.ForegroundBrush = ToBrush(EnvironmentColors.ControlLinkTextBrushKey);
             }
 
             return lineElement;

@@ -15,7 +15,7 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new FileLinkElementGenerator());
 
         private readonly StackTraceEditor _textEditor;
-        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile)? (\d+)", RegexOptions.IgnoreCase);
+        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile)?\s?(\d+)", RegexOptions.IgnoreCase);
 
         public FileLinkElementGenerator(StackTraceEditor textEditor)
         {
@@ -56,7 +56,7 @@ namespace StackTraceExplorer.Generators
                 new[] { match.Groups[1].Value, match.Groups[2].Value },
                 CurrentContext.VisualLine,
                 match.Groups[0].Length,
-                ToBrush(EnvironmentColors.ControlLinkTextColorKey),
+                ToBrush(EnvironmentColors.ControlLinkTextBrushKey),
                 ClickHelper.HandleFileLinkClicked,
                 false,
                 CurrentContext.Document,
@@ -65,7 +65,7 @@ namespace StackTraceExplorer.Generators
 
             if (TraceHelper.ViewModel.IsClickedLine(line))
             {
-                line.ForegroundBrush = ToBrush(EnvironmentColors.StatusBarNoSolutionColorKey);
+                line.ForegroundBrush = ToBrush(EnvironmentColors.ControlLinkTextBrushKey);
             }
 
             return line;

@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+             xmlns:theming="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
              xmlns:platformUI="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:stacktraceexplorer="clr-namespace:StackTraceExplorer"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -25,24 +25,59 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TabItem}">
                             <Grid>
-                                <Border Name="Border">
-                                    <ContentPresenter x:Name="ContentSite" Margin="3" VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        ContentSource="Header" >
-                                    </ContentPresenter>
+                                <Border Name="Border" Padding="3">
+                                    <StackPanel Orientation="Horizontal" x:Name="StackTraceTab"
+                                                theming:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabSelectedGradientBottomColorKey}}">
+                                        <TextBlock Text="Stack Trace" Name="TabTitle"/>
+                                        <imaging:CrispImage
+                                            Name="CloseButton"
+                                            Width="10"
+                                            Height="10" 
+                                            Margin="5,2,0,0"
+                                            Moniker="{x:Static catalog:KnownMonikers.Close}"
+                                            MouseDown="CloseButton_MouseDown" />
+                                    </StackPanel>
                                 </Border>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static platformUI:EnvironmentColors.TitleBarActiveBorderBrushKey}}" />
-                                    <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{DynamicResource {x:Static platformUI:EnvironmentColors.TitleBarActiveTextBrushKey}}"/>
+                                    <Setter TargetName="Border" 
+                                            Property="Background" 
+                                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabSelectedGradientBottomBrushKey}}" />
+                                    <Setter TargetName="TabTitle" 
+                                            Property="Foreground" 
+                                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabSelectedTextBrushKey}}"/>
+                                    <Setter TargetName="TabTitle" 
+                                            Property="FontWeight" 
+                                            Value="Bold"/>
+                                    <Setter TargetName="CloseButton" 
+                                            Property="Visibility" 
+                                            Value="Visible"/>
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="False">
-                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static platformUI:EnvironmentColors.TitleBarInactiveBrushKey}}" />
-                                    <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{DynamicResource {x:Static platformUI:EnvironmentColors.TitleBarInactiveTextBrushKey}}"/>
+                                    <Setter TargetName="Border" 
+                                            Property="Background" 
+                                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabBackgroundBrushKey}}" />
+                                    <Setter TargetName="TabTitle" 
+                                            Property="Foreground" 
+                                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabTextBrushKey}}"/>
+                                    <Setter TargetName="TabTitle" 
+                                            Property="FontWeight" 
+                                            Value="Regular"/>
+                                    <Setter TargetName="CloseButton" 
+                                            Property="Visibility" 
+                                            Value="Hidden"/>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabHotBorderBrushKey}}" />
+                                    <Setter TargetName="Border" 
+                                            Property="Background" 
+                                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabHotGradientBottomBrushKey}}" />
+                                    <Setter TargetName="TabTitle" 
+                                            Property="Foreground" 
+                                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.FileTabSelectedTextBrushKey}}"/>
+                                    <Setter TargetName="CloseButton" 
+                                            Property="Visibility" 
+                                            Value="Visible"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -50,15 +85,6 @@
                 </Setter>
             </Style>
         </TabControl.Resources>
-        <!-- Change ItemTemplate to control content on tabs -->
-        <TabControl.ItemTemplate>
-            <DataTemplate>
-                <StackPanel Orientation="Horizontal" x:Name="StackTraceTab">
-                    <TextBlock Text="Stack Trace" />
-                    <imaging:CrispImage Width="10" Height="10" Margin="5,2,0,0" Moniker="{x:Static catalog:KnownMonikers.Close}" MouseDown="CloseButton_MouseDown" />
-                </StackPanel>
-            </DataTemplate>
-        </TabControl.ItemTemplate>
         <!-- Change ContentTemplate to control main content -->
         <TabControl.ContentTemplate>
             <DataTemplate>
@@ -116,14 +142,14 @@
 
                     <stacktraceexplorer:StackTraceEditor 
                         x:Name="TextEditor"
-                        SyntaxHighlighting="C#"
                         FontFamily="Consolas"
                         FontSize="10pt"
+                        SyntaxHighlighting="null"
                         WordWrap="{Binding WordWrap}"
                         Document="{Binding Document}"
                         TextChanged="TextEditor_TextChanged"
-                        Background="{DynamicResource {x:Static platformUI:EnvironmentColors.ScrollBarBorderBrushKey}}"
-                        Foreground="{DynamicResource {x:Static platformUI:EnvironmentColors.StartPageTextSubHeadingSelectedBrushKey}}"
+                        Background="{DynamicResource {x:Static platformUI:EnvironmentColors.ToolWindowBackgroundBrushKey}}"
+                        Foreground="{DynamicResource {x:Static platformUI:EnvironmentColors.ToolWindowTextBrushKey}}"
                         Grid.Row="1"/>
                     
                 </Grid>

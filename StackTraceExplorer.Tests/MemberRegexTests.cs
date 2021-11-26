@@ -9,7 +9,11 @@ namespace StackTraceExplorer.Tests
     public class MemberRegexTests
     {
         [DataTestMethod]
-        [DataRow("Bla.Program.Main(String[] args)", "Bla.Program.Main(String[] args)", new [] { "Bla.", "Program." }, "Main(String[] args)")]
+        [DataRow(
+            "Bla.Program.Main(String[] args)",
+            "Bla.Program.Main(String[] args)",
+            new [] { "Bla.", "Program." },
+            "Main(String[] args)")]
         [DataRow(
             @"at Bla.Program.InnerClass.InnerMain() in C:\repos\Bla.Program\InnerClass.cs:line 168",
             "Bla.Program.InnerClass.InnerMain()",
