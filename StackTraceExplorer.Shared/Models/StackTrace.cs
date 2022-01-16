@@ -16,17 +16,9 @@ namespace StackTraceExplorer.Shared.Models
         public StackTrace(string trace = null)
             => SetStackTrace(trace);
 
-        private bool _wordWrap;
-
-        public bool WordWrap
-        {
-            get => _wordWrap;
-            set => SetProperty(ref _wordWrap, value);
-        }
-
         public void SetStackTrace(string trace)
         {
-            Document = new TextDocument { Text = WrapStackTrace(trace) };
+            Document = new TextDocument { Text = FormatStackTrace(trace) };
             NotifyPropertyChanged("Document");
         }
 
@@ -36,25 +28,17 @@ namespace StackTraceExplorer.Shared.Models
         public bool IsClickedLine(CustomLinkVisualLineText line)
             => ClickedLines.Any(l => l.Link.SequenceEqual(line.Link));
 
-        private string WrapStackTrace(string trace)
+        private string FormatStackTrace(string trace)
         {
             if (string.IsNullOrEmpty(trace))
             {
                 return string.Empty;
             }
 
-            if (trace.Contains(Environment.NewLine))
-            {
-                return trace;
-            }
-
-            var lines = Regex
-                .Split(trace, @"(?=\s+(at|в)\s+)")
-                .Where(line => !string.IsNullOrEmpty(line))
-                .Where(line => !string.IsNullOrWhiteSpace(line))
-                .Where(line => line != "в");
-
-            return string.Join(Environment.NewLine, lines);
+            return trace
+                .Replace("\r\n", "")
+                .Replace(" at ", "\r\n   at ")
+                .Replace(" --- End of inner exception stack trace --- ", "\r\n--- End of inner exception stack trace--- ");
         }
     }
 }
