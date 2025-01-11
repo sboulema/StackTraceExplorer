@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -145,7 +146,11 @@ namespace StackTraceExplorer.Helpers
                     return string.Empty;
                 }
 
-                string file = StringHelper.FindLongestMatchingSuffix(path, files, StringComparison.OrdinalIgnoreCase);
+                var candidates = new List<string>();
+                candidates.AddRange(files.Select(f => f.Replace('\\', '/')));
+                candidates.AddRange(files.Select(f => f.Replace('/', '\\')));
+
+                string file = StringHelper.FindLongestMatchingSuffix(path, candidates.ToArray(), StringComparison.OrdinalIgnoreCase);
 
                 if (file != null)
                 {
