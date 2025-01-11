@@ -13,7 +13,7 @@
         <Icon guid="ImageCatalogGuid" id="CallStackWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
-          <ButtonText>Stack Trace Explorer</ButtonText>
+          <ButtonText>Stack Trace Explorer (Ext)</ButtonText>
         </Strings>
       </Button>
     </Buttons>
