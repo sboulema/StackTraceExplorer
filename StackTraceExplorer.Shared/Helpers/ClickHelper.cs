@@ -106,6 +106,8 @@ namespace StackTraceExplorer.Helpers
             }
         }
 
+        private static readonly Dictionary<string, string> CacheFolders = new Dictionary<string, string>();
+
         /// <summary>
         /// Given a path to a file, try to find a project item that closely matches the file path, 
         /// but is not an exact match
@@ -123,6 +125,19 @@ namespace StackTraceExplorer.Helpers
             {
                 await WriteOutputAsync(outputWindow, $"FindFile: '{path}': full path exists ({stopwatch.Elapsed})");
                 return path;
+            }
+
+            foreach (var mapping in CacheFolders)
+            {
+                if (path.StartsWith(mapping.Key))
+                {
+                    var potentialPath = path.Replace(mapping.Key, mapping.Value);
+                    if (File.Exists(potentialPath))
+                    {
+                        await WriteOutputAsync(outputWindow, $"FindFile: '{potentialPath}': full path exists ({stopwatch.Elapsed})");
+                        return potentialPath;
+                    }
+                }
             }
 
             string fileNameOnly = Path.GetFileName(path);
@@ -154,6 +169,8 @@ namespace StackTraceExplorer.Helpers
 
                 if (file != null)
                 {
+                    var paths = LongestUncommonPath(path, file);
+                    CacheFolders[paths.Item1] = paths.Item2;
                     await outputWindow.WriteLineAsync($"FindFile: Returning file: '{file}' ({stopwatch.Elapsed})");
                     return file;
                 }
@@ -165,6 +182,28 @@ namespace StackTraceExplorer.Helpers
 
             await outputWindow.WriteLineAsync($"FindFile: '{path}' returning original path! Is this bad? ({stopwatch.Elapsed})'");
             return path;
+        }
+
+        private static (string, string) LongestUncommonPath(string s1, string s2)
+        {
+            var minLength = Math.Min(s1.Length, s2.Length);
+            var s1Sep = s1.Replace('/', '\\');
+            var s2Sep = s2.Replace('/', '\\');
+            for (int i = 0; i < minLength; i++)
+            {
+                if (s1Sep[s1Sep.Length-i-1] == s2Sep[s2Sep.Length-i-1])
+                {
+                    continue;
+                }
+                else
+                {
+                    var pathsCached = (s1.Substring(0, s1.Length - i + 1), s2.Substring(0, s2.Length - i + 1));
+                    return pathsCached;
+                }
+            }
+
+            //Should not happen...
+            return (string.Empty, string.Empty);
         }
 
         /// <summary>
@@ -180,6 +219,11 @@ namespace StackTraceExplorer.Helpers
             var result = input[0].Substring(0, index + needle.Length);
 
             return result;
+        }
+
+        internal static void ClearCache()
+        {
+            CacheFolders.Clear();
         }
     }
 }
