@@ -133,7 +133,7 @@ namespace StackTraceExplorer.Helpers
                 return string.Empty;
             }
 
-            var solutionDir = new DirectoryInfo(Path.GetDirectoryName(solution.FullPath)).Parent;
+            var solutionDir = new DirectoryInfo(Path.GetDirectoryName(solution.FullPath));
             try
             {
                 await outputWindow.WriteLineAsync($"FindFile: '{path}' looking for '{fileNameOnly}' in '{solutionDir.FullName}'");
