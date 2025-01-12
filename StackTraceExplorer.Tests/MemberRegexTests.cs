@@ -67,6 +67,14 @@ namespace StackTraceExplorer.Tests
             "StackTraceExplorer.Tests.SolutionHelperTests.ClassWithGenericTypeArgs`1.StaticMethod[C]()",
             new[] { "StackTraceExplorer.", "Tests.", "SolutionHelperTests.", "ClassWithGenericTypeArgs`1." },
             "StaticMethod[C]()")]
+        [DataRow(@"StackTraceExplorer.Tests.SolutionHelperTests.<GetAsync>g__Parse|155_0(IEnumerable`1 lines) in C:\StackTraceExplorer.Tests\DummyFile.cs:line 21",
+            "StackTraceExplorer.Tests.SolutionHelperTests.<GetAsync>g__Parse|155_0(IEnumerable`1 lines)",
+            new[] { "StackTraceExplorer.", "Tests.", "SolutionHelperTests." },
+            "<GetAsync>g__Parse|155_0(IEnumerable`1 lines)")]
+        [DataRow(@"StackTraceExplorer.Tests.SolutionHelperTests.ThreadHelper+<>c__DisplayClass13_0+<<FileAndForget>b__0>d.MoveNext() in C:\StackTraceExplorer.Tests\DummyFile.cs:line 21",
+            "StackTraceExplorer.Tests.SolutionHelperTests.ThreadHelper+<>c__DisplayClass13_0+<<FileAndForget>b__0>d.MoveNext()",
+            new[] { "StackTraceExplorer.", "Tests.", "SolutionHelperTests.", "ThreadHelper+<>c__DisplayClass13_0+<<FileAndForget>b__0>d." },
+            "MoveNext()")]
         public void ShouldMatch(string input, string expectedMatch, string[] expectedCaptures, string expectedMethod)
         {
             var match = MemberLinkElementGenerator.MemberRegex.Match(input);
