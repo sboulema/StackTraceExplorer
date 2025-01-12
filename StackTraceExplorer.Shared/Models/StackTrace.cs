@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using Microsoft.VisualStudio.PlatformUI;
+using StackTraceExplorer.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace StackTraceExplorer.Shared.Models
         public void SetStackTrace(string trace)
         {
             Document = new TextDocument { Text = WrapStackTrace(trace) };
+            ClickHelper.ClearCache();
             NotifyPropertyChanged("Document");
         }
 
