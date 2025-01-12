@@ -49,10 +49,12 @@ namespace StackTraceExplorer.Shared.Models
             }
 
             var lines = Regex
-                .Split(trace, @"(?=\s+(at|в)\s+)")
+                .Split(trace, @"(?=\s+(at|в|à)\s+)")
                 .Where(line => !string.IsNullOrEmpty(line))
                 .Where(line => !string.IsNullOrWhiteSpace(line))
-                .Where(line => line != "в");
+                .Where(line => line != "at")
+                .Where(line => line != "в")
+                .Where(line => line != "à");
 
             return string.Join(Environment.NewLine, lines);
         }
