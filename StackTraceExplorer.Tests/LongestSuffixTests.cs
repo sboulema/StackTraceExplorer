@@ -20,6 +20,10 @@
             @"D:\test\product\Project1\Sample.cs",
             new[] { @"C:\test\product\Project1\Sample.cs", @"D:\test\product\Project1\Sample.cs" },
             @"D:\test\product\Project1\Sample.cs")]
+        [DataRow(
+            @"/src/test/product/Project1/Sample.cs",
+            new[] { @"/target/test/product/Project1/Sample.cs", @"/src/product/Project1/Sample.cs" },
+            @"/target/test/product/Project1/Sample.cs")]
         public void LongestSuffixMatch(string path, string[] candidates, string expected)
         {
             string longestMatched = StringHelper.FindLongestMatchingSuffix(path, candidates, StringComparison.OrdinalIgnoreCase);

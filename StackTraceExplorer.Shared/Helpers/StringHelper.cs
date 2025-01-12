@@ -6,6 +6,7 @@
 
     public static class StringHelper
     {
+        private static readonly char[] Separators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
         public static string FindLongestMatchingSuffix(string searchString, string[] candidates, StringComparison comparisonType)
         {
             int nextSeparatorIndex = 0;
@@ -20,7 +21,7 @@
                 }
                 else
                 {
-                    nextSeparatorIndex = searchString.IndexOf(Path.DirectorySeparatorChar.ToString(), previousSeparatorIndex);
+                    nextSeparatorIndex = searchString.IndexOfAny(Separators, previousSeparatorIndex);
                     if (nextSeparatorIndex == -1)
                     {
                         break;
