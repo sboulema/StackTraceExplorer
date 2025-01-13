@@ -58,10 +58,11 @@ namespace StackTraceExplorer.Generators
             var captures = match.Groups[1].Captures.Cast<Capture>().Select(c => c.Value).ToList();
             captures.Add(match.Groups[2].Value);
 
+            var firstCapture = captures[0];
             var lineElement = new CustomLinkVisualLineText(
-                new [] { _fullMatchText, captures.First() }, 
+                new [] { _fullMatchText, firstCapture }, 
                 CurrentContext.VisualLine,
-                captures.First().TrimEnd('.').Length,
+                firstCapture.TrimEnd('.').Length,
                 ToBrush(EnvironmentColors.ControlLinkTextBrushKey), 
                 ClickHelper.HandleMemberLinkClicked, 
                 false,
@@ -71,7 +72,7 @@ namespace StackTraceExplorer.Generators
 
             // If we have created elements for the entire definition, reset. 
             // So we can create elements for more definitions
-            if (_fullMatchText.EndsWith(captures.First()))
+            if (_fullMatchText.EndsWith(firstCapture))
             {
                 _fullMatchText = null;
             }
