@@ -13,7 +13,7 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new FileLinkElementGenerator());
 
         private readonly StackTraceEditor _textEditor;
-        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile|строка|ligne)?\s?(\d+)", RegexOptions.IgnoreCase);
+        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile|строка|ligne)?\s?(\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public FileLinkElementGenerator(StackTraceEditor textEditor)
         {
