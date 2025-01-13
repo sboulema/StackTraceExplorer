@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StackTraceExplorer.Generators;
 
@@ -83,11 +84,7 @@ namespace StackTraceExplorer.Tests
             Assert.AreEqual(expectedMatch, match.Value, nameof(expectedMatch));
 
             var captures = match.Groups[1].Captures.Cast<Capture>().Select(c => c.Value).ToArray();
-            Assert.AreEqual(expectedCaptures.Length, captures.Length, "captures.Length did not match expected");
-            for (int i = 0; i < expectedCaptures.Length; i++)
-            {
-                Assert.AreEqual(expectedCaptures[i], captures[i], $"Capture at index {i} did not match");
-            }
+            captures.Should().BeEquivalentTo(expectedCaptures);
 
             Assert.AreEqual(expectedMethod, match.Groups[2].Value, nameof(expectedMethod));
         }
