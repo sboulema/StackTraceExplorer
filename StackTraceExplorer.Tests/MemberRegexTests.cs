@@ -78,7 +78,7 @@ namespace StackTraceExplorer.Tests
             "MoveNext()")]
         public void ShouldMatch(string input, string expectedMatch, string[] expectedCaptures, string expectedMethod)
         {
-            var match = MemberLinkElementGenerator.MemberRegex.Match(input);
+            var match = MemberLinkElementGenerator.FindMatch(input);
 
             Assert.IsTrue(match.Success, "Match was not a success!");
             Assert.AreEqual(expectedMatch, match.Value, nameof(expectedMatch));
@@ -95,7 +95,7 @@ namespace StackTraceExplorer.Tests
         [DataRow("Normal sentence [pretty much]")]
         public void ShouldNotMatch(string input)
         {
-            var match = MemberLinkElementGenerator.MemberRegex.Match(input);
+            var match = MemberLinkElementGenerator.FindMatch(input);
             Assert.IsFalse(match.Success, $"Input {input} should not match.");
         }
     }

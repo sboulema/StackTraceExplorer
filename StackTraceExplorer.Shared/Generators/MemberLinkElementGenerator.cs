@@ -14,7 +14,7 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
         private readonly StackTraceEditor _textEditor;
-        public static readonly Regex MemberRegex = new Regex(@"([A-Za-z0-9<>_`+]+\.)*((.ctor|[A-Za-z0-9<>_\[,\]|+])+\(.*?\))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex MemberRegex = new Regex(@"([A-Za-z0-9<>_`+]+\.)*((.ctor|[A-Za-z0-9<>_\[,\]|+])+\(.*?\))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private string _fullMatchText;
 
@@ -29,7 +29,12 @@ namespace StackTraceExplorer.Generators
             var endOffset = CurrentContext.VisualLine.LastDocumentLine.EndOffset;
             var document = CurrentContext.Document;
             var relevantText = document.GetText(startOffset, endOffset - startOffset);
-            return MemberRegex.Match(relevantText);
+            return FindMatch(relevantText);
+        }
+
+        public static Match FindMatch(string text)
+        {
+            return MemberRegex.Match(text);
         }
 
         /// Gets the first offset >= startOffset where the generator wants to construct
