@@ -46,6 +46,13 @@ There are multiple ways open opening new tabs to show your stack traces:
 ## Screenshots
 ![Screenshot](https://i.imgur.com/42mKURv.png)
 
+## Debug extension
+
+On `StackTraceExplorer.VS2022` project property, set 'Debug' properties as the following:
+* set radio button to `Start external program`
+* browse for Visual Studio executable (like `C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe`)
+* set `/RootSuffix Exp` in `Command line arguments`
+
 ## Thanks
 - [Resharper](https://www.jetbrains.com/resharper/) (for the initial idea to recreate this)
 - [Terrajobst](https://github.com/terrajobst/stack-trace-explorer) (for some inspiration on optimizing the extension)
