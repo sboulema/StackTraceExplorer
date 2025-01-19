@@ -42,6 +42,7 @@ There are multiple ways open opening new tabs to show your stack traces:
 ## Supported stack trace formats
 - Visual Studio
 - Application Insights
+- [Ben.Demystifier](https://github.com/benaadams/Ben.Demystifier)
 
 ## Screenshots
 ![Screenshot](https://i.imgur.com/42mKURv.png)

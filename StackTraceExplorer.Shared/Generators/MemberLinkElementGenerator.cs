@@ -14,7 +14,9 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new MemberLinkElementGenerator());
 
         private readonly StackTraceEditor _textEditor;
-        private static readonly Regex MemberRegex = new Regex(@"([A-Za-z0-9<>_`+]+\.)*((.ctor|[A-Za-z0-9<>_\[,\]|+])+\(.*?\))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex MemberVisualStudioRegex = new Regex(@"(?<member>(?<namespace>[A-Za-z0-9<>_`+]+\.)*(?<method>(.ctor|[A-Za-z0-9<>_\[,\]|+])+\(.*?\)))", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex MemberAppInsightsRegex = new Regex(@"(?<member>(?<namespace>[A-Za-z0-9<>_`+]+\.)*(?<method>(.ctor|[A-Za-z0-9<>_\[,\]|+])+)) \(.+:\d+\)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex MemberDemystifiedRegex = new Regex(@"(async )?([A-Za-z0-9<>_`+]+ )(?<member>(?<namespace>[A-Za-z0-9<>_`+]+\.)*(?<method>(.ctor|[A-Za-z0-9<>_\[,\]|+])+\(.*?\))) ", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         private string _fullMatchText;
 
@@ -34,7 +36,13 @@ namespace StackTraceExplorer.Generators
 
         public static Match FindMatch(string text)
         {
-            return MemberRegex.Match(text);
+            var match = MemberDemystifiedRegex.Match(text);
+            if (match.Success)
+                return match;
+            match = MemberAppInsightsRegex.Match(text);
+            if (match.Success)
+                return match;
+            return MemberVisualStudioRegex.Match(text);
         }
 
         /// Gets the first offset >= startOffset where the generator wants to construct
@@ -57,11 +65,11 @@ namespace StackTraceExplorer.Generators
             // The first match returns the full method definition
             if (string.IsNullOrEmpty(_fullMatchText))
             {
-                _fullMatchText = match.Value;
+                _fullMatchText = match.Groups["member"].Value;
             }
 
-            var captures = match.Groups[1].Captures.Cast<Capture>().Select(c => c.Value).ToList();
-            captures.Add(match.Groups[2].Value);
+            var captures = match.Groups["namespace"].Captures.Cast<Capture>().Select(c => c.Value).ToList();
+            captures.Add(match.Groups["method"].Value);
 
             var firstCapture = captures[0];
             var lineElement = new CustomLinkVisualLineText(
