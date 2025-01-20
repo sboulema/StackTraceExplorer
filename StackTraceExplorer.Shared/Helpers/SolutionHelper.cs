@@ -28,6 +28,8 @@ namespace StackTraceExplorer.Helpers
             return Compilations;
         }
 
+        public static bool CompilationServiceNotInitialized => Compilations.IsDefault;
+
         public static ISymbol Resolve(string memberName)
         {
             ISymbol symbol = Compilations.Select(c => Resolve(c, memberName)).FirstOrDefault(s => s != null);

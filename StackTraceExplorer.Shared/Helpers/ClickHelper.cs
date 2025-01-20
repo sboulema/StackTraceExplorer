@@ -69,10 +69,16 @@ namespace StackTraceExplorer.Helpers
                 OutputWindowPane outputWindow = await stackTraceEditor.EnsureOutputWindowPaneAsync();
                 try
                 {
+                    if (SolutionHelper.CompilationServiceNotInitialized)
+                    {
+                        await WriteOutputAsync(outputWindow, $"MemberLinkClicked: {typeOrMemberName}: Compilation service not initialized. Build solution first...", showInStatusBar: true);
+                        return;
+                    }
+
                     var member = SolutionHelper.Resolve(typeOrMemberName);
                     if (member == null)
                     {
-                        await WriteOutputAsync(outputWindow, $"MemberLinkClicked: {typeOrMemberName}: unable to resolve member ({stopwatch.Elapsed})", true);
+                        await WriteOutputAsync(outputWindow, $"MemberLinkClicked: {typeOrMemberName}: unable to resolve member ({stopwatch.Elapsed})", showInStatusBar: true);
                         return;
                     }
 
