@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StackTraceExplorer.Generators;
 
 namespace StackTraceExplorer.Tests
@@ -34,18 +32,19 @@ namespace StackTraceExplorer.Tests
             @"D:\a\CodeNav\CodeNav\CodeNav.Shared\Helpers\HistoryHelper.cs:21",
             @"D:\a\CodeNav\CodeNav\CodeNav.Shared\Helpers\HistoryHelper.cs",
             "21")]
-        public void ShouldMatch(string input, string expectedMatch, string expectedFile, string expectedLine)
+        [DataRow(
+            @"at Dapper.SqlMapper+<ExecuteScalarImplAsync>d__69`1.MoveNext (Dapper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null: /_/Dapper/SqlMapper.Async.cs:1241)",
+            @"/_/Dapper/SqlMapper.Async.cs:1241",
+            @"/_/Dapper/SqlMapper.Async.cs",
+            "1241")]
+        public void ShouldMatch(string input, string expectedPlace, string expectedFile, string expectedLine)
         {
             var match = FileLinkElementGenerator.FilePathRegex.Match(input);
 
             Assert.IsTrue(match.Success, "Match was not a success!");
-            Assert.AreEqual(expectedMatch, match.Value, nameof(expectedMatch));
-
-            var captures = match.Groups[1].Captures.Cast<Capture>().Select(c => c.Value).ToArray();
-            Assert.AreEqual(1, captures.Length, "captures.Length did not match expected");
-            Assert.AreEqual(expectedFile, captures[0], nameof(expectedFile));
-
-            Assert.AreEqual(expectedLine, match.Groups[2].Value, nameof(expectedLine));
+            Assert.AreEqual(expectedPlace, match.Groups["place"].Value, nameof(expectedPlace));
+            Assert.AreEqual(expectedFile, match.Groups["path"].Value, nameof(expectedFile));
+            Assert.AreEqual(expectedLine, match.Groups["line"].Value, nameof(expectedLine));
         }
     }
 }

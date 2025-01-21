@@ -13,7 +13,7 @@ namespace StackTraceExplorer.Generators
         // textEditor.TextArea.TextView.ElementGenerators.Add(new FileLinkElementGenerator());
 
         private readonly StackTraceEditor _textEditor;
-        public static readonly Regex FilePathRegex = new Regex(@"((?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile|строка|ligne)?\s?(\d+)", RegexOptions.IgnoreCase);
+        public static readonly Regex FilePathRegex = new Regex(@" (?<place>(?<path>(?:[A-Za-z]\:|\\|/)(?:[\\/a-zA-Z_\-\s0-9\.\(\)]+)+):(?:line|Zeile|строка|ligne)?\s?(?<line>\d+))", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         public FileLinkElementGenerator(StackTraceEditor textEditor)
         {
@@ -51,9 +51,9 @@ namespace StackTraceExplorer.Generators
             }
 
             var line = new CustomLinkVisualLineText(
-                new[] { match.Groups[1].Value, match.Groups[2].Value },
+                new[] { match.Groups["path"].Value, match.Groups["line"].Value },
                 CurrentContext.VisualLine,
-                match.Groups[0].Length,
+                match.Groups["place"].Length + 1,
                 ToBrush(EnvironmentColors.ControlLinkTextBrushKey),
                 ClickHelper.HandleFileLinkClicked,
                 false,
