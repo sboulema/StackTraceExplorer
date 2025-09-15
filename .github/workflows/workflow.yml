@@ -7,7 +7,7 @@ on:
       - 'feature/**'
 
 env:
-  version: '3.0.${{ github.run_number }}'
+  version: '4.0.${{ github.run_number }}'
   repoUrl: ${{ github.server_url }}/${{ github.repository }}
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Update Assembly Version
         uses: dannevesdantas/set-version-assemblyinfo@v.1.0.0
@@ -24,13 +24,13 @@ jobs:
           version: ${{ env.version }}
 
       - name: Update Vsix Version (VS2019)
-        uses: cezarypiatek/VsixVersionAction@1.0
+        uses: cezarypiatek/VsixVersionAction@1.2
         with:
           version: ${{ env.version }}
           vsix-manifest-file: 'StackTraceExplorer.VS2019\source.extension.vsixmanifest'
 
       - name: Update Vsix Version (VS2022)
-        uses: cezarypiatek/VsixVersionAction@1.0
+        uses: cezarypiatek/VsixVersionAction@1.2
         with:
           version: ${{ env.version }}
           vsix-manifest-file: 'StackTraceExplorer.VS2022\source.extension.vsixmanifest'
@@ -56,13 +56,16 @@ jobs:
             readme.md
 
   release:
+    if: github.ref_name == 'main'
     name: 🚀 Release
     needs: build
     runs-on: windows-latest
     environment: Release
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
+        with:
+          merge-multiple: true
 
       - name: Tag release
         id: tag_release
@@ -83,14 +86,14 @@ jobs:
       - name: Publish to Marketplace - VS2019
         uses: cezarypiatek/VsixPublisherAction@1.1
         with:
-          extension-file: StackTraceExplorer/StackTraceExplorer.VS2019/bin/release/StackTraceExplorer.VS2019.vsix
+          extension-file: ${{ github.workspace }}/StackTraceExplorer.VS2019/bin/release/StackTraceExplorer.VS2019.vsix
           publish-manifest-file: StackTraceExplorer/publish-manifest.VS2019.json
           personal-access-code: ${{ secrets.VS_PUBLISHER_ACCESS_TOKEN }}
 
       - name: Publish to Marketplace - VS2022
         uses: cezarypiatek/VsixPublisherAction@1.1
         with:
-          extension-file: StackTraceExplorer/StackTraceExplorer.VS2022/bin/release/StackTraceExplorer.VS2022.vsix
+          extension-file: ${{ github.workspace }}/StackTraceExplorer.VS2022/bin/release/StackTraceExplorer.VS2022.vsix
           publish-manifest-file: StackTraceExplorer/publish-manifest.VS2022.json
           personal-access-code: ${{ secrets.VS_PUBLISHER_ACCESS_TOKEN }}
 
