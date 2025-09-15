@@ -87,14 +87,14 @@ jobs:
         uses: cezarypiatek/VsixPublisherAction@1.1
         with:
           extension-file: ${{ github.workspace }}/StackTraceExplorer.VS2019/bin/release/StackTraceExplorer.VS2019.vsix
-          publish-manifest-file: StackTraceExplorer/publish-manifest.VS2019.json
+          publish-manifest-file: publish-manifest.VS2019.json
           personal-access-code: ${{ secrets.VS_PUBLISHER_ACCESS_TOKEN }}
 
       - name: Publish to Marketplace - VS2022
         uses: cezarypiatek/VsixPublisherAction@1.1
         with:
           extension-file: ${{ github.workspace }}/StackTraceExplorer.VS2022/bin/release/StackTraceExplorer.VS2022.vsix
-          publish-manifest-file: StackTraceExplorer/publish-manifest.VS2022.json
+          publish-manifest-file: publish-manifest.VS2022.json
           personal-access-code: ${{ secrets.VS_PUBLISHER_ACCESS_TOKEN }}
 
       - name: Publish to Open VSIX Gallery - VS2019
