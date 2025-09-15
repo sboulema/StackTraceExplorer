@@ -19,8 +19,6 @@ namespace StackTraceExplorer
 
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
-            RegisterEvents();
-
             await Package.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             _control = new StackTraceExplorerToolWindowControl();
@@ -34,19 +32,6 @@ namespace StackTraceExplorer
             public Pane()
             {
                 BitmapImageMoniker = KnownMonikers.CallStackWindow;
-            }
-        }
-
-        private void RegisterEvents()
-        {
-            VS.Events.WindowEvents.ActiveFrameChanged += WindowEvents_ActiveFrameChanged;
-        }
-
-        private void WindowEvents_ActiveFrameChanged(ActiveFrameChangeEventArgs obj)
-        {
-            if (obj.NewFrame.Caption.Equals("Stack Trace Explorer"))
-            {
-                _control.EnsureOneStackTrace();
             }
         }
     }

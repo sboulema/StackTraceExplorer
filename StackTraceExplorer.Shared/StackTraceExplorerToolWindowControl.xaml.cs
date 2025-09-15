@@ -19,12 +19,11 @@ namespace StackTraceExplorer
 
             KeyDown += StackTraceExplorerToolWindowControl_KeyDown;
             Drop += StackTraceExplorerToolWindowControl_Drop;
+            Loaded += StackTraceExplorerToolWindowControl_Loaded;
 
             ViewModel = new StackTracesViewModel();
             DataContext = ViewModel;
             TraceHelper.ViewModel = ViewModel;
-
-            EnsureOneStackTrace();
         }
 
         /// <summary>
@@ -134,11 +133,25 @@ namespace StackTraceExplorer
 
         private void StackTraceExplorerToolWindowControl_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
+            if (Keyboard.Modifiers == ModifierKeys.Control &&
+                e.Key == Key.V &&
+                Clipboard.ContainsText())
             {
                 AddStackTrace(Clipboard.GetText());
             }
             base.OnKeyDown(e);
+        }
+
+        private void StackTraceExplorerToolWindowControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Clipboard.ContainsText())
+            {
+                AddStackTrace(Clipboard.GetText());
+            }
+
+            EnsureOneStackTrace();
+
+            e.Handled = true;
         }
         #endregion
     }
